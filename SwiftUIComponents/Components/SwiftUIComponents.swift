@@ -26,6 +26,7 @@ public protocol ComponentConfiguration {
 public enum ComponentCategory: String, CaseIterable, Codable {
     case buttons = "Buttons & Actions"
     case inputs = "Text & Input"
+    case controls = "Controls & Selection"
     case layout = "Layout Containers"
     case feedback = "Feedback & Indicators"
     case navigation = "Navigation"
@@ -36,6 +37,7 @@ public enum ComponentCategory: String, CaseIterable, Codable {
         switch self {
         case .buttons: return "button.programmable"
         case .inputs: return "textformat"
+        case .controls: return "switch.2"
         case .layout: return "rectangle.3.group"
         case .feedback: return "exclamationmark.bubble"
         case .navigation: return "arrow.triangle.turn.up.right.diamond"
@@ -48,6 +50,7 @@ public enum ComponentCategory: String, CaseIterable, Codable {
         switch self {
         case .buttons: return .blue
         case .inputs: return .green
+        case .controls: return .indigo
         case .layout: return .orange
         case .feedback: return .red
         case .navigation: return .purple
@@ -127,9 +130,9 @@ public class ComponentRegistry: ObservableObject {
                 id: "CustomTextField",
                 displayName: "Custom Text Field",
                 category: .inputs,
-                description: "Enhanced text field with validation and styling",
+                description: "Enhanced text field with validation, icons, and styling",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
                 id: "CustomTextEditor",
@@ -188,15 +191,116 @@ public class ComponentRegistry: ObservableObject {
                 isImplemented: false
             ),
             
-            // MARK: - Layout Containers (0/8 implemented)
+            // MARK: - Controls & Selection (1/6 implemented)
+            ComponentModel(
+                id: "NativeSegmentedControlShowcase",
+                displayName: "Native Segmented Control Showcase",
+                category: .controls,
+                description: "Showcase of native iOS Picker with .segmented style",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "NativeToggleShowcase",
+                displayName: "Native Toggle Showcase",
+                category: .controls,
+                description: "Showcase of native iOS Toggle with all built-in styles",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "NativeSliderShowcase",
+                displayName: "Native Slider Showcase",
+                category: .controls,
+                description: "Showcase of native iOS Slider component",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "NativePickerShowcase",
+                displayName: "Native Picker Showcase",
+                category: .controls,
+                description: "Showcase of native iOS Picker with all built-in styles (segmented, wheel, menu, automatic, navigationLink)",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "RangeSlider",
+                displayName: "Range Slider",
+                category: .controls,
+                description: "Dual-handle slider for range selection",
+                minimumIOSVersion: "16.0",
+                isImplemented: false
+            ),
+            ComponentModel(
+                id: "RatingControl",
+                displayName: "Rating Control",
+                category: .controls,
+                description: "Star rating input component",
+                minimumIOSVersion: "16.0",
+                isImplemented: false
+            ),
+            
+            // MARK: - Navigation (1/6 implemented)
+            ComponentModel(
+                id: "CustomTabBar",
+                displayName: "Custom Tab Bar",
+                category: .navigation,
+                description: "Enhanced tab bar with multiple styles and smooth animations",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "NavigationBar",
+                displayName: "Navigation Bar",
+                category: .navigation,
+                description: "Custom navigation with breadcrumbs",
+                minimumIOSVersion: "16.0",
+                isImplemented: false
+            ),
+            ComponentModel(
+                id: "Breadcrumbs",
+                displayName: "Breadcrumbs",
+                category: .navigation,
+                description: "Navigation path indicator",
+                minimumIOSVersion: "16.0",
+                isImplemented: false
+            ),
+            ComponentModel(
+                id: "Pagination",
+                displayName: "Pagination",
+                category: .navigation,
+                description: "Page navigation controls",
+                minimumIOSVersion: "16.0",
+                isImplemented: false
+            ),
+            ComponentModel(
+                id: "StepIndicator",
+                displayName: "Step Indicator",
+                category: .navigation,
+                description: "Multi-step process indicator",
+                minimumIOSVersion: "16.0",
+                isImplemented: false
+            ),
+            ComponentModel(
+                id: "MenuBar",
+                displayName: "Menu Bar",
+                category: .navigation,
+                description: "Horizontal menu navigation",
+                minimumIOSVersion: "16.0",
+                isImplemented: false
+            ),
+            
+            // MARK: - Layout Containers (1/8 implemented)
             ComponentModel(
                 id: "CustomCard",
                 displayName: "Custom Card",
                 category: .layout,
-                description: "Container with shadow, borders, and headers",
+                description: "Versatile card container with multiple styles and content support",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
+
             ComponentModel(
                 id: "CollapsibleSection",
                 displayName: "Collapsible Section",
@@ -254,22 +358,22 @@ public class ComponentRegistry: ObservableObject {
                 isImplemented: false
             ),
             
-            // MARK: - Feedback & Indicators (0/9 implemented)
+            // MARK: - Feedback & Indicators (1/9 implemented)
             ComponentModel(
                 id: "ProgressIndicator",
                 displayName: "Progress Indicator",
                 category: .feedback,
-                description: "Linear and circular progress bars",
+                description: "Progress indicators with multiple styles and animations",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
                 id: "LoadingSpinner",
                 displayName: "Loading Spinner",
                 category: .feedback,
-                description: "Various loading animations",
+                description: "Activity indicators with custom animations",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
                 id: "SkeletonLoader",
@@ -285,7 +389,7 @@ public class ComponentRegistry: ObservableObject {
                 category: .feedback,
                 description: "Temporary notification messages",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
                 id: "Banner",
@@ -301,7 +405,7 @@ public class ComponentRegistry: ObservableObject {
                 category: .feedback,
                 description: "Small status indicators and counters",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
                 id: "StatusIndicator",
