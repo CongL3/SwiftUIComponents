@@ -59,8 +59,8 @@ struct ComponentCategoryListView: View {
             // Stats
             HStack(spacing: 24) {
                 StatView(title: "Categories", value: "\(ComponentCategory.allCases.count)")
-                StatView(title: "Components", value: "\(componentRegistry.totalComponentCount)")
-                StatView(title: "Complete", value: "\(componentRegistry.completeComponentCount)")
+                StatView(title: "Components", value: "\(componentRegistry.components.count)")
+                StatView(title: "Complete", value: "\(componentRegistry.components.filter { $0.isImplemented }.count)")
             }
             .padding(.top, 8)
         }
@@ -92,7 +92,7 @@ struct CategoryCardView: View {
                     Spacer()
                     
                     // Component count badge
-                    Text("\(componentRegistry.componentCount(for: category))")
+                    Text("\(componentRegistry.components(for: category).count)")
                         .font(.caption)
                         .fontWeight(.semibold)
                         .foregroundStyle(.white)
@@ -124,11 +124,11 @@ struct CategoryCardView: View {
         case .buttons: return "Interactive buttons and action controls"
         case .inputs: return "Text fields, forms, and user input"
         case .controls: return "Segmented controls, toggles, and selection"
-        case .layout: return "Containers and layout components"
-        case .feedback: return "Progress indicators and notifications"
-        case .navigation: return "Navigation bars and routing"
+        case .layout: return "Lists, grids, and layout components"
+        case .feedback: return "Alerts, progress indicators, and notifications"
+        case .navigation: return "Navigation, sheets, and presentation"
         case .media: return "Images, videos, and media content"
-        case .advanced: return "Complex and specialized components"
+        case .system: return "System integration and platform features"
         }
     }
 }
@@ -299,6 +299,64 @@ struct ComponentDetailView: View {
             textEditorPreviewSection
         case "NativeSecureFieldShowcase":
             secureFieldPreviewSection
+        
+        // New native components
+        case "ProgressViewShowcase":
+            ProgressViewShowcase()
+        case "ColorPickerShowcase":
+            ColorPickerShowcase()
+        case "NavigationStackShowcase":
+            NavigationStackShowcase()
+        case "ImageShowcase":
+            ImageShowcase()
+        case "AsyncImageShowcase":
+            AsyncImageShowcase()
+        case "ListStylesShowcase":
+            ListShowcase()
+        case "FormShowcase":
+            FormShowcase()
+        case "GaugeShowcase":
+            GaugeShowcase()
+        case "LinkShowcase":
+            LinkShowcase()
+        case "MenuShowcase":
+            MenuShowcase()
+        case "HUDLoadingShowcase":
+            HUDLoadingShowcase()
+        case "SymbolShowcase":
+            SFSymbolsShowcase()
+        case "ScrollViewShowcase":
+            ScrollViewShowcase()
+        case "SheetPresentationShowcase":
+            SheetShowcase()
+        case "VideoPlayerShowcase":
+            VideoPlayerShowcase()
+        case "PhotosPickerShowcase":
+            PhotosPickerShowcase()
+        case "LazyVGridShowcase":
+            LazyVGridShowcase()
+        case "DividerSpacerShowcase":
+            DividerSpacerShowcase()
+        case "CanvasShowcase":
+            CanvasShowcase()
+        case "ShareLinkShowcase":
+            ShareLinkShowcase()
+        case "DocumentPickerShowcase":
+            DocumentPickerShowcase()
+        case "MapKitShowcase":
+            MapKitShowcase()
+        case "SafariViewShowcase":
+            SafariViewShowcase()
+        case "MessageUIShowcase":
+            MessageUIShowcase()
+        case "StoreKitShowcase":
+            StoreKitShowcase()
+        case "NavigationSplitViewShowcase":
+            NavigationSplitViewShowcase()
+        case "PopoverShowcase":
+            PopoverShowcase()
+        case "FullScreenCoverShowcase":
+            FullScreenCoverShowcase()
         default:
             Text("Preview coming soon...")
                 .foregroundStyle(.secondary)

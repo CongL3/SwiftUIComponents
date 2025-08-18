@@ -23,40 +23,60 @@ public protocol ComponentConfiguration {
 
 // MARK: - Component Categories
 
-public enum ComponentCategory: String, CaseIterable, Codable {
+public enum ComponentCategory: String, CaseIterable {
     case buttons = "Buttons & Actions"
-    case inputs = "Text & Input"
     case controls = "Controls & Selection"
-    case layout = "Layout Containers"
+    case inputs = "Text & Input"
     case feedback = "Feedback & Indicators"
-    case navigation = "Navigation"
-    case media = "Media & Content"
-    case advanced = "Advanced"
+    case navigation = "Navigation & Presentation"
+    case layout = "Layout & Data"
+    case media = "Media & Graphics"
+    case system = "System Integration"
     
     public var icon: String {
         switch self {
         case .buttons: return "button.programmable"
+        case .controls: return "slider.horizontal.3"
         case .inputs: return "textformat"
-        case .controls: return "switch.2"
+        case .feedback: return "exclamationmark.triangle"
+        case .navigation: return "rectangle.stack"
         case .layout: return "rectangle.3.group"
-        case .feedback: return "exclamationmark.bubble"
-        case .navigation: return "arrow.triangle.turn.up.right.diamond"
         case .media: return "photo"
-        case .advanced: return "gearshape.2"
+        case .system: return "gear"
         }
     }
     
     public var color: Color {
         switch self {
         case .buttons: return .blue
+        case .controls: return .purple
         case .inputs: return .green
-        case .controls: return .indigo
-        case .layout: return .orange
-        case .feedback: return .red
-        case .navigation: return .purple
+        case .feedback: return .orange
+        case .navigation: return .indigo
+        case .layout: return .cyan
         case .media: return .pink
-        case .advanced: return .gray
+        case .system: return .gray
         }
+    }
+}
+
+// MARK: - Component Model
+
+public struct ComponentModel: Identifiable, Hashable {
+    public let id: String
+    public let displayName: String
+    public let category: ComponentCategory
+    public let description: String
+    public let minimumIOSVersion: String
+    public let isImplemented: Bool
+    
+    public init(id: String, displayName: String, category: ComponentCategory, description: String, minimumIOSVersion: String, isImplemented: Bool) {
+        self.id = id
+        self.displayName = displayName
+        self.category = category
+        self.description = description
+        self.minimumIOSVersion = minimumIOSVersion
+        self.isImplemented = isImplemented
     }
 }
 
@@ -73,9 +93,9 @@ public class ComponentRegistry: ObservableObject {
     }
     
     private func registerComponents() {
-        // Register all available components
+        // Register ONLY native iOS/SwiftUI components
         components = [
-            // MARK: - Native Buttons & Actions (4/4 implemented)
+            // MARK: - Native Buttons & Actions (4/7 implemented)
             ComponentModel(
                 id: "StandardButtons",
                 displayName: "Standard Buttons",
@@ -105,6 +125,88 @@ public class ComponentRegistry: ObservableObject {
                 displayName: "Buttons with Icons",
                 category: .buttons,
                 description: "Native iOS buttons with SF Symbols and labels",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "LinkShowcase",
+                displayName: "Link",
+                category: .buttons,
+                description: "Native SwiftUI Link component for web URLs",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "MenuShowcase",
+                displayName: "Menu",
+                category: .buttons,
+                description: "Native SwiftUI Menu with different presentations and styles",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "ShareLinkShowcase",
+                displayName: "ShareLink",
+                category: .buttons,
+                description: "Native iOS 16+ ShareLink component for sharing content",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            
+            // MARK: - Native Controls & Selection (5/7 implemented)
+            ComponentModel(
+                id: "NativePickerShowcase",
+                displayName: "Picker Styles",
+                category: .controls,
+                description: "Native iOS picker styles (.segmented, .wheel, .menu, .palette, .navigationLink)",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "NativeToggleShowcase",
+                displayName: "Toggle Styles",
+                category: .controls,
+                description: "Native iOS toggle styles (.automatic, .switch, .button, .checkbox)",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "NativeSliderShowcase",
+                displayName: "Slider",
+                category: .controls,
+                description: "Native SwiftUI Slider component",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "NativeDatePickerShowcase",
+                displayName: "DatePicker Styles",
+                category: .controls,
+                description: "Native iOS DatePicker styles (.compact, .wheel, .graphical)",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "NativeStepperShowcase",
+                displayName: "Stepper",
+                category: .controls,
+                description: "Native SwiftUI Stepper component with different display styles",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "ColorPickerShowcase",
+                displayName: "ColorPicker",
+                category: .controls,
+                description: "Native iOS 14+ ColorPicker component",
+                minimumIOSVersion: "14.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "GaugeShowcase",
+                displayName: "Gauge",
+                category: .controls,
+                description: "Native iOS 16+ Gauge component with different styles",
                 minimumIOSVersion: "16.0",
                 isImplemented: true
             ),
@@ -159,468 +261,279 @@ public class ComponentRegistry: ObservableObject {
                 isImplemented: true
             ),
             
-            // MARK: - Controls & Selection (1/6 implemented)
+            // MARK: - Native Feedback & Indicators (2/4 implemented) 🚨 NEEDS EXPANSION
             ComponentModel(
-                id: "NativeSegmentedControlShowcase",
-                displayName: "Native Segmented Control Showcase",
-                category: .controls,
-                description: "Showcase of native iOS Picker with .segmented style",
+                id: "NativeAlertShowcase",
+                displayName: "Alert",
+                category: .feedback,
+                description: "Native SwiftUI Alert presentations (.basic, .confirmation, .destructive, .textInput)",
                 minimumIOSVersion: "16.0",
                 isImplemented: true
             ),
             ComponentModel(
-                id: "NativeToggleShowcase",
-                displayName: "Native Toggle Showcase",
-                category: .controls,
-                description: "Showcase of native iOS Toggle with all built-in styles",
+                id: "NativeActionSheetShowcase",
+                displayName: "ActionSheet",
+                category: .feedback,
+                description: "Native iOS ConfirmationDialog (ActionSheet) presentations",
                 minimumIOSVersion: "16.0",
                 isImplemented: true
             ),
             ComponentModel(
-                id: "NativeSliderShowcase",
-                displayName: "Native Slider Showcase",
-                category: .controls,
-                description: "Showcase of native iOS Slider component",
+                id: "ProgressViewShowcase",
+                displayName: "ProgressView",
+                category: .feedback,
+                description: "Native iOS ProgressView (.linear, .circular, .indeterminate)",
                 minimumIOSVersion: "16.0",
                 isImplemented: true
             ),
             ComponentModel(
-                id: "NativeDatePickerShowcase",
-                displayName: "Native DatePicker Showcase",
-                category: .controls,
-                description: "Showcase of native iOS DatePicker styles (.compact, .wheel, .graphical)",
+                id: "HUDLoadingShowcase",
+                displayName: "HUD/Loading",
+                category: .feedback,
+                description: "Native iOS loading indicators and activity views",
                 minimumIOSVersion: "16.0",
                 isImplemented: true
-            ),
-            ComponentModel(
-                id: "NativeStepperShowcase",
-                displayName: "Native Stepper Showcase",
-                category: .controls,
-                description: "Showcase of native iOS Stepper component with different display styles",
-                minimumIOSVersion: "16.0",
-                isImplemented: true
-            ),
-            ComponentModel(
-                id: "NativeTextEditorShowcase",
-                displayName: "Native TextEditor Showcase",
-                category: .inputs,
-                description: "Showcase of native iOS TextEditor for multiline text input",
-                minimumIOSVersion: "16.0",
-                isImplemented: true
-            ),
-            ComponentModel(
-                id: "NativeSecureFieldShowcase",
-                displayName: "Native SecureField Showcase",
-                category: .inputs,
-                description: "Showcase of native iOS SecureField for password input",
-                minimumIOSVersion: "16.0",
-                isImplemented: true
-            ),
-            ComponentModel(
-                id: "NativePickerShowcase",
-                displayName: "Native Picker Showcase",
-                category: .controls,
-                description: "Showcase of native iOS Picker with all built-in styles (segmented, wheel, menu, automatic, navigationLink)",
-                minimumIOSVersion: "16.0",
-                isImplemented: true
-            ),
-            ComponentModel(
-                id: "RangeSlider",
-                displayName: "Range Slider",
-                category: .controls,
-                description: "Dual-handle slider for range selection",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "RatingControl",
-                displayName: "Rating Control",
-                category: .controls,
-                description: "Star rating input component",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
             ),
             
-            // MARK: - Native Navigation (1/4 implemented)
+            // MARK: - Native Navigation & Presentation (1/8 implemented) 🚨 MAJOR GAPS
             ComponentModel(
                 id: "NativeTabViewShowcase",
-                displayName: "Native TabView Showcase",
+                displayName: "TabView",
                 category: .navigation,
-                description: "Showcase of native iOS TabView with different styles (.automatic, .page)",
+                description: "Native SwiftUI TabView (.automatic, .page) with tab styling",
                 minimumIOSVersion: "16.0",
                 isImplemented: true
             ),
             ComponentModel(
-                id: "NavigationBar",
-                displayName: "Navigation Bar",
+                id: "NavigationStackShowcase",
+                displayName: "NavigationStack",
                 category: .navigation,
-                description: "Custom navigation with breadcrumbs",
+                description: "Native iOS 16+ NavigationStack with path-based navigation",
                 minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "NavigationSplitViewShowcase",
+                displayName: "NavigationSplitView",
+                category: .navigation,
+                description: "Native iOS 16+ NavigationSplitView for iPad/Mac",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "NavigationViewShowcase",
+                displayName: "NavigationView",
+                category: .navigation,
+                description: "Legacy NavigationView for iOS 15 compatibility",
+                minimumIOSVersion: "15.0",
                 isImplemented: false
             ),
             ComponentModel(
-                id: "Breadcrumbs",
-                displayName: "Breadcrumbs",
+                id: "SheetPresentationShowcase",
+                displayName: "Sheet Presentations",
                 category: .navigation,
-                description: "Navigation path indicator",
+                description: "Native SwiftUI sheet modifiers and presentations",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
-                id: "Pagination",
-                displayName: "Pagination",
+                id: "PopoverShowcase",
+                displayName: "Popover",
                 category: .navigation,
-                description: "Page navigation controls",
+                description: "Native SwiftUI popover presentations",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
-                id: "StepIndicator",
-                displayName: "Step Indicator",
+                id: "FullScreenCoverShowcase",
+                displayName: "FullScreenCover",
                 category: .navigation,
-                description: "Multi-step process indicator",
+                description: "Native SwiftUI fullScreenCover presentations",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
-                id: "MenuBar",
-                displayName: "Menu Bar",
+                id: "ConfirmationDialogShowcase",
+                displayName: "ConfirmationDialog",
                 category: .navigation,
-                description: "Horizontal menu navigation",
+                description: "Native SwiftUI confirmation dialogs",
                 minimumIOSVersion: "16.0",
                 isImplemented: false
             ),
             
-            // MARK: - Layout Containers (1/8 implemented)
+            // MARK: - Native Layout & Data (0/10 implemented) 🚨 MAJOR GAPS
             ComponentModel(
-                id: "CustomCard",
-                displayName: "Custom Card",
+                id: "ListStylesShowcase",
+                displayName: "List Styles",
                 category: .layout,
-                description: "Versatile card container with multiple styles and content support",
+                description: "Native SwiftUI List (.plain, .grouped, .inset, .sidebar)",
                 minimumIOSVersion: "16.0",
                 isImplemented: true
             ),
-
             ComponentModel(
-                id: "CollapsibleSection",
-                displayName: "Collapsible Section",
+                id: "FormShowcase",
+                displayName: "Form",
                 category: .layout,
-                description: "Expandable/collapsible content sections",
+                description: "Native SwiftUI Form with different section styles",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "SectionShowcase",
+                displayName: "Section",
+                category: .layout,
+                description: "Native SwiftUI Section for grouping content",
                 minimumIOSVersion: "16.0",
                 isImplemented: false
             ),
             ComponentModel(
-                id: "SplitView",
-                displayName: "Split View",
+                id: "ScrollViewShowcase",
+                displayName: "ScrollView",
                 category: .layout,
-                description: "Resizable split pane layout",
+                description: "Native SwiftUI ScrollView with different configurations",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "LazyVGridShowcase",
+                displayName: "LazyVGrid",
+                category: .layout,
+                description: "Native SwiftUI LazyVGrid for vertical grids",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "LazyHGridShowcase",
+                displayName: "LazyHGrid",
+                category: .layout,
+                description: "Native SwiftUI LazyHGrid for horizontal grids",
                 minimumIOSVersion: "16.0",
                 isImplemented: false
             ),
             ComponentModel(
-                id: "GridLayout",
-                displayName: "Grid Layout",
+                id: "GridShowcase",
+                displayName: "Grid",
                 category: .layout,
-                description: "Flexible grid container",
+                description: "Native iOS 16+ Grid layout",
                 minimumIOSVersion: "16.0",
                 isImplemented: false
             ),
             ComponentModel(
-                id: "FlowLayout",
-                displayName: "Flow Layout",
+                id: "DividerSpacerShowcase",
+                displayName: "Divider & Spacer",
                 category: .layout,
-                description: "Auto-wrapping layout for tags and chips",
+                description: "Native SwiftUI Divider and Spacer components",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
-                id: "StickyHeader",
-                displayName: "Sticky Header",
+                id: "TableShowcase",
+                displayName: "Table",
                 category: .layout,
-                description: "Header that sticks to top when scrolling",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "TabContainer",
-                displayName: "Tab Container",
-                category: .layout,
-                description: "Custom tab interface",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "Sidebar",
-                displayName: "Sidebar",
-                category: .layout,
-                description: "Collapsible sidebar navigation",
+                description: "Native iOS 16+ Table component (iPad/Mac)",
                 minimumIOSVersion: "16.0",
                 isImplemented: false
             ),
             
-            // MARK: - Feedback & Indicators (1/9 implemented)
+            // MARK: - Native Media & Graphics (0/5 implemented) 🚨 MAJOR GAPS
             ComponentModel(
-                id: "ProgressIndicator",
-                displayName: "Progress Indicator",
-                category: .feedback,
-                description: "Progress indicators with multiple styles and animations",
+                id: "ImageShowcase",
+                displayName: "Image",
+                category: .media,
+                description: "Native SwiftUI Image with different content modes and styling",
                 minimumIOSVersion: "16.0",
                 isImplemented: true
             ),
             ComponentModel(
-                id: "LoadingSpinner",
-                displayName: "Loading Spinner",
-                category: .feedback,
-                description: "Activity indicators with custom animations",
+                id: "AsyncImageShowcase",
+                displayName: "AsyncImage",
+                category: .media,
+                description: "Native SwiftUI AsyncImage for loading remote images",
+                minimumIOSVersion: "15.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "SymbolShowcase",
+                displayName: "SF Symbols",
+                category: .media,
+                description: "Native SF Symbols with different rendering modes",
                 minimumIOSVersion: "16.0",
                 isImplemented: true
             ),
             ComponentModel(
-                id: "SkeletonLoader",
-                displayName: "Skeleton Loader",
-                category: .feedback,
-                description: "Placeholder content while loading",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "Toast",
-                displayName: "Toast",
-                category: .feedback,
-                description: "Temporary notification messages",
-                minimumIOSVersion: "16.0",
+                id: "VideoPlayerShowcase",
+                displayName: "VideoPlayer",
+                category: .media,
+                description: "Native iOS 14+ VideoPlayer component",
+                minimumIOSVersion: "14.0",
                 isImplemented: true
             ),
             ComponentModel(
-                id: "Banner",
-                displayName: "Banner",
-                category: .feedback,
-                description: "Persistent notification bar",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "Badge",
-                displayName: "Badge",
-                category: .feedback,
-                description: "Small status indicators and counters",
-                minimumIOSVersion: "16.0",
+                id: "CanvasShowcase",
+                displayName: "Canvas",
+                category: .media,
+                description: "Native SwiftUI Canvas for custom drawing",
+                minimumIOSVersion: "15.0",
                 isImplemented: true
-            ),
-            ComponentModel(
-                id: "StatusIndicator",
-                displayName: "Status Indicator",
-                category: .feedback,
-                description: "Connection and health status dots",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "Tooltip",
-                displayName: "Tooltip",
-                category: .feedback,
-                description: "Hover information popover",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "EmptyState",
-                displayName: "Empty State",
-                category: .feedback,
-                description: "Placeholder for empty content",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
             ),
             
-            // MARK: - Navigation (0/5 implemented)
+            // MARK: - Native System Integration (0/6 implemented) 🚨 MAJOR GAPS
             ComponentModel(
-                id: "NavigationBar",
-                displayName: "Navigation Bar",
-                category: .navigation,
-                description: "Custom navigation with breadcrumbs",
+                id: "PhotosPickerShowcase",
+                displayName: "PhotosPicker",
+                category: .system,
+                description: "Native iOS 16+ PhotosPicker component",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
-                id: "Breadcrumbs",
-                displayName: "Breadcrumbs",
-                category: .navigation,
-                description: "Navigation path indicator",
+                id: "DocumentPickerShowcase",
+                displayName: "DocumentPicker",
+                category: .system,
+                description: "Native iOS document picker",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
-                id: "Pagination",
-                displayName: "Pagination",
-                category: .navigation,
-                description: "Page navigation controls",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
+                id: "MapKitShowcase",
+                displayName: "MapKit",
+                category: .system,
+                description: "Native SwiftUI Map component",
+                minimumIOSVersion: "17.0",
+                isImplemented: true
             ),
             ComponentModel(
-                id: "StepIndicator",
-                displayName: "Step Indicator",
-                category: .navigation,
-                description: "Multi-step process indicator",
+                id: "SafariViewShowcase",
+                displayName: "SafariView",
+                category: .system,
+                description: "Native Safari view controller",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
-                id: "MenuBar",
-                displayName: "Menu Bar",
-                category: .navigation,
-                description: "Horizontal menu navigation",
+                id: "MessageUIShowcase",
+                displayName: "MessageUI",
+                category: .system,
+                description: "Native iOS mail and message composers",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            
-            // MARK: - Media & Content (0/7 implemented)
-            ComponentModel(
-                id: "ImageViewer",
-                displayName: "Image Viewer",
-                category: .media,
-                description: "Zoomable image display with gestures",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
-                id: "Avatar",
-                displayName: "Avatar",
-                category: .media,
-                description: "User profile images with fallbacks",
+                id: "StoreKitShowcase",
+                displayName: "StoreKit",
+                category: .system,
+                description: "Native iOS in-app purchase views",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "AvatarGroup",
-                displayName: "Avatar Group",
-                category: .media,
-                description: "Multiple overlapping avatars",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "MediaCarousel",
-                displayName: "Media Carousel",
-                category: .media,
-                description: "Swipeable media gallery",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "VideoPlayer",
-                displayName: "Video Player",
-                category: .media,
-                description: "Custom video player controls",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "AudioPlayer",
-                displayName: "Audio Player",
-                category: .media,
-                description: "Audio playback controls",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "QRCodeView",
-                displayName: "QR Code View",
-                category: .media,
-                description: "QR code generator and scanner",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            
-            // MARK: - Advanced (0/6 implemented)
-            ComponentModel(
-                id: "ChartView",
-                displayName: "Chart View",
-                category: .advanced,
-                description: "Data visualization charts",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "MapView",
-                displayName: "Map View",
-                category: .advanced,
-                description: "Interactive map component",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "CameraView",
-                displayName: "Camera View",
-                category: .advanced,
-                description: "Camera capture interface",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "DocumentPicker",
-                displayName: "Document Picker",
-                category: .advanced,
-                description: "File selection interface",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "ShareSheet",
-                displayName: "Share Sheet",
-                category: .advanced,
-                description: "Native sharing interface",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "NotificationBanner",
-                displayName: "Notification Banner",
-                category: .advanced,
-                description: "System-style notifications",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             )
         ]
     }
     
-    // MARK: - Public Methods
-    
     public func components(for category: ComponentCategory) -> [ComponentModel] {
-        components.filter { $0.category == category }
-    }
-    
-    public func componentCount(for category: ComponentCategory) -> Int {
-        components(for: category).count
-    }
-    
-    public var totalComponentCount: Int {
-        components.count
-    }
-    
-    public var completeComponentCount: Int {
-        components.filter { $0.isImplemented }.count
+        return components.filter { $0.category == category }
     }
     
     public func component(withId id: String) -> ComponentModel? {
-        components.first { $0.id == id }
-    }
-}
-
-public struct ComponentModel: Identifiable, Codable {
-    public let id: String
-    public let displayName: String
-    public let category: ComponentCategory
-    public let description: String
-    public let minimumIOSVersion: String
-    public let isImplemented: Bool
-    
-    public init(id: String, displayName: String, category: ComponentCategory, description: String, minimumIOSVersion: String, isImplemented: Bool = false) {
-        self.id = id
-        self.displayName = displayName
-        self.category = category
-        self.description = description
-        self.minimumIOSVersion = minimumIOSVersion
-        self.isImplemented = isImplemented
+        return components.first { $0.id == id }
     }
 } 
