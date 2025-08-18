@@ -357,6 +357,16 @@ struct ComponentDetailView: View {
             PopoverShowcase()
         case "FullScreenCoverShowcase":
             FullScreenCoverShowcase()
+        case "ConfirmationDialogShowcase":
+            ConfirmationDialogShowcase()
+        case "SectionShowcase":
+            SectionShowcase()
+        case "LazyHGridShowcase":
+            LazyHGridShowcase()
+        case "GridShowcase":
+            GridShowcase()
+        case "TableShowcase":
+            TableShowcase()
         default:
             Text("Preview coming soon...")
                 .foregroundStyle(.secondary)

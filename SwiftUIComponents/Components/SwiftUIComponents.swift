@@ -358,7 +358,7 @@ public class ComponentRegistry: ObservableObject {
                 category: .navigation,
                 description: "Native SwiftUI confirmation dialogs",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             
             // MARK: - Native Layout & Data (0/10 implemented) 🚨 MAJOR GAPS
@@ -384,7 +384,7 @@ public class ComponentRegistry: ObservableObject {
                 category: .layout,
                 description: "Native SwiftUI Section for grouping content",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
                 id: "ScrollViewShowcase",
@@ -408,7 +408,7 @@ public class ComponentRegistry: ObservableObject {
                 category: .layout,
                 description: "Native SwiftUI LazyHGrid for horizontal grids",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
                 id: "GridShowcase",
@@ -416,7 +416,7 @@ public class ComponentRegistry: ObservableObject {
                 category: .layout,
                 description: "Native iOS 16+ Grid layout",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
                 id: "DividerSpacerShowcase",
@@ -432,7 +432,7 @@ public class ComponentRegistry: ObservableObject {
                 category: .layout,
                 description: "Native iOS 16+ Table component (iPad/Mac)",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             
             // MARK: - Native Media & Graphics (0/5 implemented) 🚨 MAJOR GAPS
