@@ -1,0 +1,4 @@
+module SwiftUIComponents {
+    header "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/SwiftUIComponents-Swift.h"
+    requires objc
+}

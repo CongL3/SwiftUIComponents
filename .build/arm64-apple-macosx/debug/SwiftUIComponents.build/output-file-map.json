@@ -1,0 +1,17 @@
+{
+  "": {
+    "swift-dependencies": "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/master.swiftdeps"
+  },
+  "/Users/congle/Dev/SwiftUIComponents/Sources/SwiftUIComponents/Components/Buttons/CustomButton.swift": {
+    "dependencies": "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/CustomButton.d",
+    "object": "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/CustomButton.swift.o",
+    "swiftmodule": "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/CustomButton~partial.swiftmodule",
+    "swift-dependencies": "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/CustomButton.swiftdeps"
+  },
+  "/Users/congle/Dev/SwiftUIComponents/Sources/SwiftUIComponents/SwiftUIComponents.swift": {
+    "dependencies": "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/SwiftUIComponents.d",
+    "object": "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/SwiftUIComponents.swift.o",
+    "swiftmodule": "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/SwiftUIComponents~partial.swiftmodule",
+    "swift-dependencies": "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/SwiftUIComponents.swiftdeps"
+  }
+}

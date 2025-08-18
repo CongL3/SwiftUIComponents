@@ -1,0 +1,159 @@
+{
+  "projectName": "SwiftUIComponents",
+  "allowMissingCursorImport": true,
+  "completionTimeout": 30000,
+  "codebase": {
+    "includePatterns": ["**/*.swift", "**/*.xib", "**/*.storyboard", "context/**/*.md", ".gitignore"],
+    "excludePatterns": ["**/.build/**", "**/Pods/**", "**/Carthage/**", "**/DerivedData/**"]
+  },
+  "aiSettings": {
+    "temperature": 0.2,
+    "model": "claude-3-sonnet-20240229"
+  },
+  "formatting": {
+    "swift": {
+      "indentWidth": 4,
+      "tabWidth": 4,
+      "useTabs": false,
+      "lineLength": 100
+    }
+  },
+  "customCommands": {
+    "buildSwiftUIComponents": {
+      "command": "xcodebuild clean build -scheme SwiftUIComponents -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -quiet | grep -E \"error:\" | head -n 10",
+      "description": "Build SwiftUIComponents project with iPhone 16 Pro simulator and show first 10 errors"
+    },
+    "buildVerbose": {
+      "command": "xcodebuild clean build -scheme SwiftUIComponents -destination 'platform=iOS Simulator,name=iPhone 16 Pro'",
+      "description": "Build SwiftUIComponents project with iPhone 16 Pro simulator with full output"
+    },
+    "buildWarnings": {
+      "command": "xcodebuild clean build -scheme SwiftUIComponents -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -quiet | grep -E \"warning:|error:\" | head -n 20",
+      "description": "Build SwiftUIComponents project with iPhone 16 Pro simulator and show errors and warnings"
+    },
+    "listSchemes": {
+      "command": "xcodebuild -list",
+      "description": "List all available targets and schemes in the project"
+    },
+    "updateContext": {
+      "command": "open context/context.md",
+      "description": "Open the main context file for updating session information"
+    },
+    "updateTechStack": {
+      "command": "open context/TechStack.md",
+      "description": "Open the tech stack documentation"
+    },
+    "updateDesignDoc": {
+      "command": "open context/TDD.md",
+      "description": "Open the technical design document"
+    },
+    "updateGitignore": {
+      "command": "open .gitignore",
+      "description": "Open the .gitignore file for updating"
+    },
+    "runApp": {
+      "command": "xcrun simctl launch booted com.yourcompany.SwiftUIComponents",
+      "description": "Run the built app in the simulator"
+    },
+    "listSimulators": {
+      "command": "xcrun simctl list devices | grep -E \"iPhone|iPad\" | grep \"Booted\"",
+      "description": "List available booted simulators"
+    },
+    "generateCommitMessage": {
+      "command": "echo 'Git commit message generated based on recent changes:'",
+      "description": "Generate a git commit message summarizing the changes made"
+    }
+  },
+  "snippets": {
+    "viewmodel": {
+      "prefix": "vm",
+      "body": "@MainActor\nfinal class ${1:Component}ViewModel: ObservableObject {\n    @Published private(set) var state: State\n    \n    func handleAction(_ action: Action) async throws {\n        // Handle action\n    }\n}",
+      "description": "Create a standard ViewModel with MVVM pattern"
+    },
+    "swiftuiview": {
+      "prefix": "suiv",
+      "body": "struct ${1:Component}View: View {\n    @StateObject private var viewModel: ${1:Component}ViewModel\n    \n    var body: some View {\n        // UI implementation\n    }\n}\n\n#Preview {\n    ${1:Component}View()\n}",
+      "description": "Create a standard SwiftUI view with preview"
+    },
+    "asynctask": {
+      "prefix": "task",
+      "body": "Task { [weak self] in\n    await self?.${1:performAction}()\n}",
+      "description": "Create async task with weak self"
+    }
+  },
+  "rules": [
+    {
+      "name": "Always Reference Context Files",
+      "description": "AI should always reference context files when providing assistance",
+      "trigger": "ai-request",
+      "action": "notification",
+      "message": "🧠 Remember to reference context files: context.md, TechStack.md, TDD.md for project context",
+      "commands": []
+    },
+    {
+      "name": "Update Context After Sessions",
+      "description": "Update context files after significant development sessions",
+      "trigger": "file-changed",
+      "pattern": "**/*.swift",
+      "minChanges": 15,
+      "action": "notification",
+      "message": "📝 Consider updating context/context.md with new patterns or decisions from this session",
+      "commands": ["updateContext"]
+    },
+    {
+      "name": "Update Design Document",
+      "description": "Remember to update the Design Document when making architectural changes",
+      "trigger": "file-changed",
+      "pattern": "**/*.swift",
+      "minChanges": 10,
+      "action": "notification",
+      "message": "📐 Don't forget to update context/TDD.md with architectural changes!",
+      "commands": ["updateDesignDoc"]
+    },
+    {
+      "name": "Build Check Before Commit",
+      "description": "Build the project to check for errors before committing",
+      "trigger": "pre-commit",
+      "pattern": "**/*.swift",
+      "action": "notification",
+      "message": "🔨 Running build check to ensure code compiles without errors",
+      "commands": ["buildSwiftUIComponents"]
+    },
+    {
+      "name": "Build and Validate After Major Changes",
+      "description": "Build and run the app after significant changes",
+      "trigger": "file-changed",
+      "pattern": "**/*.swift",
+      "minChanges": 20,
+      "action": "notification",
+      "message": "🚀 Significant changes detected. Consider building and running the app to validate changes.",
+      "commands": ["buildSwiftUIComponents", "listSimulators"]
+    },
+    {
+      "name": "Context File Maintenance",
+      "description": "Keep context files up to date with project evolution",
+      "trigger": "file-changed",
+      "pattern": "context/**/*.md",
+      "action": "notification",
+      "message": "📚 Context files updated. Ensure all team members are aware of changes.",
+      "commands": []
+    },
+    {
+      "name": "SwiftUI Best Practices Check",
+      "description": "Remind about SwiftUI best practices when creating new views",
+      "trigger": "file-created",
+      "pattern": "**/*View.swift",
+      "action": "notification",
+      "message": "🎨 New SwiftUI view created. Remember: @MainActor for ViewModels, weak self in async tasks, and add #Preview",
+      "commands": []
+    },
+    {
+      "name": "Generate Git Commit Message",
+      "description": "Generates a summary in git commit message format at the end of each request",
+      "trigger": "post-completion",
+      "action": "notification",
+      "message": "📝 Git Commit Summary: {{AI will generate a concise summary of changes here}}",
+      "commands": ["generateCommitMessage"]
+    }
+  ]
+} 

@@ -1,0 +1,226 @@
+{
+  "builtTestProducts" : [
+
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.SwiftUIComponents-arm64-apple-macosx15.0-debug.module" : {
+      "executable" : "/Applications/Xcode-16.1.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/sources",
+      "importPath" : "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/congle/Dev/SwiftUIComponents/Sources/SwiftUIComponents/Components/Buttons/CustomButton.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/congle/Dev/SwiftUIComponents/Sources/SwiftUIComponents/SwiftUIComponents.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/swift-version--7754E27361AE5C74.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "SwiftUIComponents",
+      "moduleOutputPath" : "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/Modules/SwiftUIComponents.swiftmodule",
+      "objects" : [
+        "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/CustomButton.swift.o",
+        "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/SwiftUIComponents.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx13.0",
+        "-enable-batch-mode",
+        "-index-store-path",
+        "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-module-cache-path",
+        "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/SwiftUIComponents-Swift.h",
+        "-color-diagnostics",
+        "-swift-version",
+        "5",
+        "-sdk",
+        "/Applications/Xcode-16.1.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk",
+        "-F",
+        "/Applications/Xcode-16.1.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode-16.1.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode-16.1.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode-16.1.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode-16.1.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "swiftuicomponents"
+      ],
+      "outputFileMapPath" : "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/CustomButton.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/SwiftUIComponents.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/Modules/SwiftUIComponents.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/congle/Dev/SwiftUIComponents/Sources/SwiftUIComponents/Components/Buttons/CustomButton.swift",
+        "/Users/congle/Dev/SwiftUIComponents/Sources/SwiftUIComponents/SwiftUIComponents.swift"
+      ],
+      "tempsPath" : "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "SwiftUIComponents" : [
+      "/Applications/Xcode-16.1.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "SwiftUIComponents",
+      "-package-name",
+      "swiftuicomponents",
+      "-incremental",
+      "-c",
+      "/Users/congle/Dev/SwiftUIComponents/Sources/SwiftUIComponents/Components/Buttons/CustomButton.swift",
+      "/Users/congle/Dev/SwiftUIComponents/Sources/SwiftUIComponents/SwiftUIComponents.swift",
+      "-I",
+      "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx13.0",
+      "-enable-batch-mode",
+      "-index-store-path",
+      "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-module-cache-path",
+      "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/SwiftUIComponents-Swift.h",
+      "-color-diagnostics",
+      "-swift-version",
+      "5",
+      "-sdk",
+      "/Applications/Xcode-16.1.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk",
+      "-F",
+      "/Applications/Xcode-16.1.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-I",
+      "/Applications/Xcode-16.1.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode-16.1.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode-16.1.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode-16.1.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "swiftuicomponents",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode-16.1.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "SwiftUIComponents" : [
+
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+
+  },
+  "writeCommands" : {
+    "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/congle/Dev/SwiftUIComponents/Sources/SwiftUIComponents/Components/Buttons/CustomButton.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/congle/Dev/SwiftUIComponents/Sources/SwiftUIComponents/SwiftUIComponents.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/SwiftUIComponents.build/sources"
+    },
+    "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/swift-version--7754E27361AE5C74.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Applications/Xcode-16.1.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/Users/congle/Dev/SwiftUIComponents/.build/arm64-apple-macosx/debug/swift-version--7754E27361AE5C74.txt"
+    }
+  }
+}

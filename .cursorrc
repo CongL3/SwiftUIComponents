@@ -1,0 +1,23 @@
+{
+  "rules": [
+    {
+      "name": "Verify Build After Code Changes",
+      "description": "Always verify that the code compiles after making significant changes",
+      "trigger": "file-changed",
+      "pattern": "**/*.swift",
+      "minChanges": 5,
+      "action": "notification",
+      "message": "🔨 Significant Swift code changes detected. Verify build to check for compiler errors.",
+      "commands": ["xcodebuild clean build -scheme SwiftUIComponents -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -quiet | grep -E \"error:\" | head -n 10"]
+    },
+    {
+      "name": "Build Check Before Commit",
+      "description": "Build the project to check for errors before committing",
+      "trigger": "pre-commit",
+      "pattern": "**/*.swift",
+      "action": "notification", 
+      "message": "🔨 Running build check before commit to ensure code compiles without errors",
+      "commands": ["xcodebuild clean build -scheme SwiftUIComponents -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -quiet | grep -E \"error:\" | head -n 10"]
+    }
+  ]
+} 
