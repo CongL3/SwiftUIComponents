@@ -75,120 +75,88 @@ public class ComponentRegistry: ObservableObject {
     private func registerComponents() {
         // Register all available components
         components = [
-            // MARK: - Buttons & Actions (1/6 implemented)
+            // MARK: - Native Buttons & Actions (4/4 implemented)
             ComponentModel(
-                id: "CustomButton",
-                displayName: "Custom Button",
+                id: "StandardButtons",
+                displayName: "Standard Buttons",
                 category: .buttons,
-                description: "Customizable button with multiple styles and icons",
+                description: "Native iOS button styles (.automatic, .bordered, .borderedProminent, .plain)",
                 minimumIOSVersion: "16.0",
                 isImplemented: true
             ),
             ComponentModel(
-                id: "FloatingActionButton",
-                displayName: "Floating Action Button",
+                id: "ButtonSizes",
+                displayName: "Button Sizes",
                 category: .buttons,
-                description: "Circular floating action button with animations",
+                description: "Native iOS button control sizes (.mini, .small, .regular, .large)",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
-                id: "ButtonGroup",
-                displayName: "Button Group",
+                id: "SpecialButtons",
+                displayName: "Special Buttons",
                 category: .buttons,
-                description: "Segmented control style button group",
+                description: "Destructive buttons, disabled states, and button roles",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
-                id: "ToggleButton",
-                displayName: "Toggle Button",
+                id: "ButtonsWithIcons",
+                displayName: "Buttons with Icons",
                 category: .buttons,
-                description: "Button that maintains pressed state",
+                description: "Native iOS buttons with SF Symbols and labels",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "LinkButton",
-                displayName: "Link Button",
-                category: .buttons,
-                description: "Text-style button for navigation",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "IconButton",
-                displayName: "Icon Button",
-                category: .buttons,
-                description: "Icon-only button with various sizes",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             
-            // MARK: - Text & Input (0/8 implemented)
+            // MARK: - Native Text & Input (6/6 implemented)
             ComponentModel(
-                id: "CustomTextField",
-                displayName: "Custom Text Field",
+                id: "BasicTextFields",
+                displayName: "Basic TextFields",
                 category: .inputs,
-                description: "Enhanced text field with validation, icons, and styling",
+                description: "Native iOS TextField styles (.plain, .roundedBorder)",
                 minimumIOSVersion: "16.0",
                 isImplemented: true
             ),
             ComponentModel(
-                id: "CustomTextEditor",
-                displayName: "Custom Text Editor",
+                id: "KeyboardTypes",
+                displayName: "Keyboard Types",
                 category: .inputs,
-                description: "Multi-line text input with formatting",
+                description: "TextField with different keyboard types (.emailAddress, .numberPad, .phonePad, .URL, etc.)",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
-                id: "SearchBar",
-                displayName: "Search Bar",
+                id: "TextContentTypes",
+                displayName: "Text Content Types",
                 category: .inputs,
-                description: "Search input with suggestions and filtering",
+                description: "TextField with text content types for AutoFill (.username, .password, .creditCardNumber, etc.)",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
-                id: "NumberField",
-                displayName: "Number Field",
+                id: "SecureFields",
+                displayName: "Secure Fields",
                 category: .inputs,
-                description: "Numeric input with steppers and validation",
+                description: "Native iOS SecureField for password input with visibility toggle",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
-                id: "PasswordField",
-                displayName: "Password Field",
+                id: "TextEditors",
+                displayName: "Text Editors",
                 category: .inputs,
-                description: "Secure text field with visibility toggle",
+                description: "Native iOS TextEditor for multiline text input",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             ComponentModel(
-                id: "TagInput",
-                displayName: "Tag Input",
+                id: "SearchFields",
+                displayName: "Search Fields",
                 category: .inputs,
-                description: "Input for creating tags and chips",
+                description: "Native iOS searchable modifier and search functionality",
                 minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "AutoCompleteField",
-                displayName: "AutoComplete Field",
-                category: .inputs,
-                description: "Text field with auto-completion",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
-            ComponentModel(
-                id: "FormField",
-                displayName: "Form Field",
-                category: .inputs,
-                description: "Wrapper for form inputs with labels",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
+                isImplemented: true
             ),
             
             // MARK: - Controls & Selection (1/6 implemented)
@@ -217,6 +185,38 @@ public class ComponentRegistry: ObservableObject {
                 isImplemented: true
             ),
             ComponentModel(
+                id: "NativeDatePickerShowcase",
+                displayName: "Native DatePicker Showcase",
+                category: .controls,
+                description: "Showcase of native iOS DatePicker styles (.compact, .wheel, .graphical)",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "NativeStepperShowcase",
+                displayName: "Native Stepper Showcase",
+                category: .controls,
+                description: "Showcase of native iOS Stepper component with different display styles",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "NativeTextEditorShowcase",
+                displayName: "Native TextEditor Showcase",
+                category: .inputs,
+                description: "Showcase of native iOS TextEditor for multiline text input",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "NativeSecureFieldShowcase",
+                displayName: "Native SecureField Showcase",
+                category: .inputs,
+                description: "Showcase of native iOS SecureField for password input",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
                 id: "NativePickerShowcase",
                 displayName: "Native Picker Showcase",
                 category: .controls,
@@ -241,12 +241,12 @@ public class ComponentRegistry: ObservableObject {
                 isImplemented: false
             ),
             
-            // MARK: - Navigation (1/6 implemented)
+            // MARK: - Native Navigation (1/4 implemented)
             ComponentModel(
-                id: "CustomTabBar",
-                displayName: "Custom Tab Bar",
+                id: "NativeTabViewShowcase",
+                displayName: "Native TabView Showcase",
                 category: .navigation,
-                description: "Enhanced tab bar with multiple styles and smooth animations",
+                description: "Showcase of native iOS TabView with different styles (.automatic, .page)",
                 minimumIOSVersion: "16.0",
                 isImplemented: true
             ),
@@ -432,15 +432,7 @@ public class ComponentRegistry: ObservableObject {
                 isImplemented: false
             ),
             
-            // MARK: - Navigation (0/6 implemented)
-            ComponentModel(
-                id: "CustomTabBar",
-                displayName: "Custom Tab Bar",
-                category: .navigation,
-                description: "Enhanced tab bar with animations",
-                minimumIOSVersion: "16.0",
-                isImplemented: false
-            ),
+            // MARK: - Navigation (0/5 implemented)
             ComponentModel(
                 id: "NavigationBar",
                 displayName: "Navigation Bar",

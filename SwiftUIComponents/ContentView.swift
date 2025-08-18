@@ -212,45 +212,17 @@ struct ComponentDetailView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
-                // Compact Header
-                HStack(spacing: 12) {
-                    Image(systemName: component.category.icon)
-                        .font(.title2)
-                        .foregroundStyle(component.category.color)
-                        .frame(width: 32, height: 32)
-                    
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(component.displayName)
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                        
-                        Text(component.description)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(2)
-                    }
-                    
-                    Spacer()
-                }
-                .padding(.vertical, 8)
-                
-                // Implementation Status
-                HStack {
-                    Label(
-                        component.isImplemented ? "Implemented" : "Coming Soon",
-                        systemImage: component.isImplemented ? "checkmark.circle.fill" : "clock.fill"
-                    )
-                    .foregroundStyle(component.isImplemented ? .green : .orange)
-                    
-                    Spacer()
-                    
-                    Text("iOS \(component.minimumIOSVersion)+")
-                        .font(.caption)
+                // Compact Header - Keep only description
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(component.description)
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
+                        .padding(.horizontal)
                 }
-                .padding()
-                .background(Color(.systemGray6))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(.systemGroupedBackground))
+                
+
                 
                 // Live Preview (if implemented)
                 if component.isImplemented {
@@ -277,14 +249,40 @@ struct ComponentDetailView: View {
     @ViewBuilder
     private var componentPreview: some View {
         switch component.id {
-        case "CustomButton":
-            buttonPreviewSection
-        case "CustomTextField":
-            textFieldPreviewSection
+        // Button Components
+        case "StandardButtons":
+            standardButtonsPreviewSection
+        case "ButtonSizes":
+            buttonSizesPreviewSection  
+        case "SpecialButtons":
+            specialButtonsPreviewSection
+        case "ButtonsWithIcons":
+            buttonsWithIconsPreviewSection
+        
+        // Text Input Components  
+        case "BasicTextFields":
+            basicTextFieldsPreviewSection
+        case "KeyboardTypes":
+            keyboardTypesPreviewSection
+        case "TextContentTypes":
+            textContentTypesPreviewSection
+        case "SecureFields":
+            secureFieldsPreviewSection
+        case "TextEditors":
+            textEditorsPreviewSection
+        case "SearchFields":
+            searchFieldsPreviewSection
+            
+        // Legacy components (to be removed)
+        case "NativeButtonShowcase":
+            standardButtonsPreviewSection
+        case "NativeTextFieldShowcase":
+            basicTextFieldsPreviewSection
+        case "NativeTabViewShowcase":
+            tabViewPreviewSection
         case "NativeSegmentedControlShowcase":
             segmentedControlPreviewSection
-        case "CustomTabBar":
-            tabBarPreviewSection
+
         case "CustomCard":
             cardPreviewSection
         case "ProgressIndicator":
@@ -293,6 +291,14 @@ struct ComponentDetailView: View {
             togglePreviewSection
         case "NativePickerShowcase":
             segmentedControlPreviewSection
+        case "NativeDatePickerShowcase":
+            datePickerPreviewSection
+        case "NativeStepperShowcase":
+            stepperPreviewSection
+        case "NativeTextEditorShowcase":
+            textEditorPreviewSection
+        case "NativeSecureFieldShowcase":
+            secureFieldPreviewSection
         default:
             Text("Preview coming soon...")
                 .foregroundStyle(.secondary)
@@ -308,9 +314,9 @@ struct ComponentDetailView: View {
             // Automatic Button Style
             NativeButtonExample(
                 title: "Automatic Button Style",
-                description: "iOS decides the best button appearance for context",
-                label: "Automatic Button",
-                style: .automatic
+                description: "System default button style",
+                style: .automatic,
+                text: "Automatic Style"
             )
             
             Divider()
@@ -319,9 +325,9 @@ struct ComponentDetailView: View {
             // Bordered Button Style
             NativeButtonExample(
                 title: "Bordered Button Style",
-                description: "Button with visible border - good for secondary actions",
-                label: "Bordered Button",
-                style: .bordered
+                description: "Button with border outline",
+                style: .bordered,
+                text: "Bordered Style"
             )
             
             Divider()
@@ -330,9 +336,9 @@ struct ComponentDetailView: View {
             // Bordered Prominent Button Style
             NativeButtonExample(
                 title: "Bordered Prominent Button Style",
-                description: "Prominent button with filled background - for primary actions",
-                label: "Primary Action",
-                style: .borderedProminent
+                description: "Prominent button with filled background",
+                style: .borderedProminent,
+                text: "Bordered Prominent"
             )
             
             Divider()
@@ -341,9 +347,9 @@ struct ComponentDetailView: View {
             // Plain Button Style
             NativeButtonExample(
                 title: "Plain Button Style",
-                description: "Minimal button style without background or border",
-                label: "Plain Button",
-                style: .plain
+                description: "Minimal button without styling",
+                style: .plain,
+                text: "Plain Style"
             )
         }
         .background(Color(.systemBackground))
@@ -351,44 +357,379 @@ struct ComponentDetailView: View {
     }
     
     private var textFieldPreviewSection: some View {
-        VStack(spacing: 16) {
-            // Standard Style
-            CustomTextField.standard(
-                label: "Standard Style",
-                placeholder: "Enter your name"
+        VStack(spacing: 0) {
+            // Standard TextField
+            NativeTextFieldExample(
+                title: "Standard TextField",
+                description: "Plain text field with system background",
+                style: .standard
             )
             
-            // Outlined Style
-            CustomTextField.outlined(
-                label: "Outlined Style",
-                placeholder: "Enter your email"
+            Divider()
+                .padding(.horizontal)
+            
+            // Rounded Border TextField
+            NativeTextFieldExample(
+                title: "Rounded Border TextField",
+                description: "Text field with rounded border style",
+                style: .roundedBorder
             )
             
-            // Filled Style
-            CustomTextField.filled(
-                label: "Filled Style",
-                placeholder: "Enter your message"
+            Divider()
+                .padding(.horizontal)
+            
+            // Email TextField
+            NativeTextFieldExample(
+                title: "Email TextField",
+                description: "Email input with appropriate keyboard",
+                style: .email
             )
             
-            // Email Field with Validation
-            CustomTextField(configuration: CustomTextFieldConfiguration(
-                label: "Email Address",
-                placeholder: "user@example.com",
-                helperText: "Required",
-                errorMessage: "Please enter a valid email",
-                style: .outlined,
-                leadingIcon: "envelope",
-                isRequired: true,
-                keyboardType: .emailAddress,
-                autocapitalization: .never,
-                validator: { text in
-                    text.contains("@") && text.contains(".")
-                }
-            ))
+            Divider()
+                .padding(.horizontal)
+            
+            // Search TextField
+            NativeTextFieldExample(
+                title: "Search TextField",
+                description: "Search field with clear button",
+                style: .search
+            )
+            
+            Divider()
+                .padding(.horizontal)
+            
+            // Number TextField
+            NativeTextFieldExample(
+                title: "Number TextField",
+                description: "Numeric input with number pad",
+                style: .number
+            )
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+    
+    // MARK: - Button Preview Sections
+    
+    private var standardButtonsPreviewSection: some View {
+        VStack(spacing: 0) {
+            NativeButtonExample(
+                title: "Automatic Button Style",
+                description: "System default button style",
+                style: .automatic,
+                text: "Automatic Style"
+            )
+            
+            Divider()
+                .padding(.horizontal)
+            
+            NativeButtonExample(
+                title: "Bordered Button Style", 
+                description: "Button with border outline",
+                style: .bordered,
+                text: "Bordered Style"
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeButtonExample(
+                title: "Bordered Prominent Button Style",
+                description: "Prominent button with filled background", 
+                style: .borderedProminent,
+                text: "Bordered Prominent"
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeButtonExample(
+                title: "Plain Button Style",
+                description: "Minimal button without styling",
+                style: .plain, 
+                text: "Plain Style"
+            )
+        }
+    }
+    
+    private var buttonSizesPreviewSection: some View {
+        VStack(spacing: 0) {
+            NativeButtonSizeExample(
+                title: "Button Control Sizes",
+                description: "Different native button sizes available in iOS"
+            )
+        }
+    }
+    
+    private var specialButtonsPreviewSection: some View {
+        VStack(spacing: 0) {
+            NativeSpecialButtonExample(
+                title: "Destructive Button",
+                description: "Button with destructive role for dangerous actions",
+                type: .destructive
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeSpecialButtonExample(
+                title: "Disabled Button", 
+                description: "Button in disabled state",
+                type: .disabled
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeSpecialButtonExample(
+                title: "Cancel Button Role",
+                description: "Button with cancel role for dismissive actions",
+                type: .cancel
+            )
+        }
+    }
+    
+    private var buttonsWithIconsPreviewSection: some View {
+        VStack(spacing: 0) {
+            NativeIconButtonExample(
+                title: "Button with Leading Icon",
+                description: "Native button with SF Symbol on the left",
+                iconPosition: .leading,
+                icon: "arrow.down.circle",
+                text: "Download"
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeIconButtonExample(
+                title: "Button with Trailing Icon",
+                description: "Native button with SF Symbol on the right", 
+                iconPosition: .trailing,
+                icon: "arrow.right",
+                text: "Continue"
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeIconButtonExample(
+                title: "Icon Only Button",
+                description: "Native button with only SF Symbol",
+                iconPosition: .iconOnly,
+                icon: "heart.fill",
+                text: ""
+            )
+        }
+    }
+    
+    // MARK: - Text Input Preview Sections
+    
+    private var basicTextFieldsPreviewSection: some View {
+        VStack(spacing: 0) {
+            NativeTextFieldExample(
+                title: "Plain TextField Style",
+                description: "Plain text field with system background",
+                style: .standard
+            )
+            
+            Divider()
+                .padding(.horizontal)
+            
+            NativeTextFieldExample(
+                title: "Rounded Border TextField Style", 
+                description: "Text field with rounded border style",
+                style: .roundedBorder
+            )
+        }
+    }
+    
+    private var keyboardTypesPreviewSection: some View {
+        VStack(spacing: 0) {
+            NativeKeyboardTypeExample(
+                title: "Email Address Keyboard",
+                description: "Optimized keyboard for email input",
+                keyboardType: .emailAddress,
+                placeholder: "Enter email address"
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeKeyboardTypeExample(
+                title: "Number Pad Keyboard",
+                description: "Numeric keypad for number input",
+                keyboardType: .numberPad,
+                placeholder: "Enter number"
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeKeyboardTypeExample(
+                title: "Phone Pad Keyboard", 
+                description: "Phone number keypad with letters",
+                keyboardType: .phonePad,
+                placeholder: "Enter phone number"
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeKeyboardTypeExample(
+                title: "URL Keyboard",
+                description: "Optimized keyboard for URL input",
+                keyboardType: .URL,
+                placeholder: "Enter website URL"
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeKeyboardTypeExample(
+                title: "Decimal Pad Keyboard",
+                description: "Numeric keypad with decimal point",
+                keyboardType: .decimalPad,
+                placeholder: "Enter decimal number"
+            )
+        }
+    }
+    
+    private var textContentTypesPreviewSection: some View {
+        VStack(spacing: 0) {
+            NativeTextContentTypeExample(
+                title: "Username Content Type",
+                description: "TextField optimized for username AutoFill",
+                contentType: .username,
+                placeholder: "Username"
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeTextContentTypeExample(
+                title: "Name Content Type",
+                description: "TextField for full name with AutoFill",
+                contentType: .name,
+                placeholder: "Full Name"
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeTextContentTypeExample(
+                title: "Email Address Content Type",
+                description: "TextField for email with AutoFill",
+                contentType: .emailAddress,
+                placeholder: "Email Address"
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeTextContentTypeExample(
+                title: "Street Address Content Type",
+                description: "TextField for street address with AutoFill",
+                contentType: .streetAddressLine1,
+                placeholder: "Street Address"
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeTextContentTypeExample(
+                title: "Credit Card Number Content Type",
+                description: "TextField for credit card with AutoFill",
+                contentType: .creditCardNumber,
+                placeholder: "Card Number"
+            )
+        }
+    }
+    
+    private var secureFieldsPreviewSection: some View {
+        VStack(spacing: 0) {
+            NativeSecureFieldExample(
+                title: "Basic Secure Field",
+                description: "Standard password input field",
+                hasToggle: false
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeSecureFieldExample(
+                title: "Secure Field with Visibility Toggle",
+                description: "Password field with show/hide functionality",
+                hasToggle: true
+            )
+        }
+    }
+    
+    private var textEditorsPreviewSection: some View {
+        VStack(spacing: 0) {
+            NativeTextEditorExample(
+                title: "Basic Text Editor",
+                description: "Multiline text input for longer content",
+                style: .basic
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeTextEditorExample(
+                title: "Text Editor with Placeholder",
+                description: "Text editor with placeholder text",
+                style: .withPlaceholder
+            )
+        }
+    }
+    
+    private var searchFieldsPreviewSection: some View {
+        VStack(spacing: 0) {
+            NativeSearchFieldExample(
+                title: "Searchable List",
+                description: "Native iOS searchable functionality",
+                style: .list
+            )
+            
+            Divider()
+                .padding(.horizontal)
+                
+            NativeSearchFieldExample(
+                title: "Search with Suggestions",
+                description: "Search field with autocomplete suggestions",
+                style: .withSuggestions
+            )
+        }
+    }
+    
+    private var tabViewPreviewSection: some View {
+        VStack(spacing: 0) {
+            // Standard TabView
+            NativeTabViewExample(
+                title: "Standard TabView",
+                description: "Standard tab bar with icons and labels",
+                style: .standard
+            )
+            
+            Divider()
+                .padding(.horizontal)
+            
+            // Page TabView
+            NativeTabViewExample(
+                title: "Page TabView Style",
+                description: "Page-style TabView with page indicators",
+                style: .page
+            )
+            
+            Divider()
+                .padding(.horizontal)
+            
+            // Page TabView with Always Visible Indicators
+            NativeTabViewExample(
+                title: "Page TabView with Always Visible Indicators",
+                description: "Page indicators always visible",
+                style: .pageAlwaysVisible
+            )
+        }
     }
     
     private var segmentedControlPreviewSection: some View {
@@ -438,37 +779,7 @@ struct ComponentDetailView: View {
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
-    
-    private var tabBarPreviewSection: some View {
-        VStack(spacing: 16) {
-            // Segmented Style
-            CustomTabBar.segmented(
-                tabs: ["Home", "Search", "Profile"],
-                selectedIndex: 0
-            )
-            
-            // Floating Style
-            CustomTabBar.floating(
-                tabs: ["Dashboard", "Analytics", "Settings"],
-                selectedIndex: 1
-            )
-            
-            // Minimal Style
-            CustomTabBar.minimal(
-                tabs: ["Overview", "Details", "History"],
-                selectedIndex: 0
-            )
-            
-            // Pills Style
-            CustomTabBar.pills(
-                tabs: ["All", "Active", "Done"],
-                selectedIndex: 2
-            )
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
+
     
     private var cardPreviewSection: some View {
         VStack(spacing: 16) {
@@ -531,8 +842,6 @@ struct ComponentDetailView: View {
             NativeToggleExample(
                 title: "Automatic Toggle Style",
                 description: "iOS decides the best toggle appearance for context",
-                label: "Enable Notifications",
-                isOn: true,
                 style: .automatic
             )
             
@@ -543,8 +852,6 @@ struct ComponentDetailView: View {
             NativeToggleExample(
                 title: "Switch Toggle Style",
                 description: "Classic iOS switch - the most common toggle",
-                label: "Dark Mode",
-                isOn: false,
                 style: .switch
             )
             
@@ -555,8 +862,6 @@ struct ComponentDetailView: View {
             NativeToggleExample(
                 title: "Button Toggle Style",
                 description: "Toggle that appears as a tappable button",
-                label: "Remember Me",
-                isOn: true,
                 style: .button
             )
             
@@ -567,8 +872,6 @@ struct ComponentDetailView: View {
             NativeToggleExample(
                 title: "Checkbox Toggle Style",
                 description: "Checkbox-style toggle (macOS native, fallback on iOS)",
-                label: "Auto-Save",
-                isOn: false,
                 style: .checkbox
             )
         }
@@ -700,6 +1003,16 @@ struct CodeSnippetView: View {
                 
                 Spacer()
                 
+                if showingCode {
+                    Button(action: {
+                        copyToClipboard()
+                    }) {
+                        Label("Copy", systemImage: "doc.on.doc")
+                            .font(.caption)
+                            .foregroundStyle(.blue)
+                    }
+                }
+                
                 Button(action: {
                     showingCode.toggle()
                 }) {
@@ -723,46 +1036,117 @@ struct CodeSnippetView: View {
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
     
+    private func copyToClipboard() {
+        #if os(iOS)
+        UIPasteboard.general.string = codeSnippet
+        #endif
+    }
+    
     private var codeSnippet: String {
         switch component.id {
-        case "CustomButton":
+        case "NativeButtonShowcase":
             return """
-// Standard Button
-CustomButton.standard(
-    title: "Click Me",
-    systemImage: "star.fill"
-) {
-    print("Button tapped!")
+// Native Button Styles
+Button("Automatic Style") {
+    // Action
 }
+.buttonStyle(.automatic)
 
-// Custom Configuration
-CustomButton(configuration: CustomButtonConfiguration(
-    title: "Custom Style",
-    backgroundColor: .purple,
-    cornerRadius: 20
-))
+Button("Bordered Style") {
+    // Action
+}
+.buttonStyle(.bordered)
+
+Button("Bordered Prominent") {
+    // Action
+}
+.buttonStyle(.borderedProminent)
+
+Button("Plain Style") {
+    // Action
+}
+.buttonStyle(.plain)
+
+// Button with Icon
+Button(action: {
+    // Action
+}) {
+    Label("Download", systemImage: "arrow.down.circle")
+}
+.buttonStyle(.borderedProminent)
+
+// Destructive Button
+Button("Delete", role: .destructive) {
+    // Destructive action
+}
+.buttonStyle(.borderedProminent)
 """
         
-        case "CustomTextField":
+        case "NativeTextFieldShowcase":
             return """
-// Standard Text Field
-CustomTextField.standard(
-    label: "Email",
-    placeholder: "Enter your email"
-) { text in
-    print("Text changed: \\(text)")
+// Native TextField Styles
+TextField("Enter text", text: $text)
+    .textFieldStyle(.plain)
+
+TextField("Enter email", text: $emailText)
+    .textFieldStyle(.roundedBorder)
+    .keyboardType(.emailAddress)
+    .textContentType(.emailAddress)
+    .autocapitalization(.none)
+
+TextField("Enter number", text: $numberText)
+    .textFieldStyle(.roundedBorder)
+    .keyboardType(.numberPad)
+
+// Search TextField with Clear Button
+TextField("Search", text: $searchText)
+    .textFieldStyle(.roundedBorder)
+    .overlay(
+        HStack {
+            Spacer()
+            if !searchText.isEmpty {
+                Button(action: { searchText = "" }) {
+                    Image(systemName: "xmark.circle.fill")
+                }
+            }
+        }
+    )
+"""
+        
+        case "NativeTabViewShowcase":
+            return """
+// Standard TabView
+TabView(selection: $selectedTab) {
+    Text("Home Content")
+        .tabItem {
+            Image(systemName: "house")
+            Text("Home")
+        }
+        .tag(0)
+    
+    Text("Search Content")
+        .tabItem {
+            Image(systemName: "magnifyingglass")
+            Text("Search")
+        }
+        .tag(1)
 }
 
-// With Validation
-CustomTextField(configuration: CustomTextFieldConfiguration(
-    label: "Email Address",
-    placeholder: "user@example.com",
-    leadingIcon: "envelope",
-    keyboardType: .emailAddress,
-    validator: { text in
-        text.contains("@") && text.contains(".")
-    }
-))
+// Page TabView
+TabView {
+    Text("Page 1")
+    Text("Page 2") 
+    Text("Page 3")
+}
+.tabViewStyle(.page)
+
+// Page TabView with Always Visible Indicators
+TabView {
+    Text("Card 1")
+    Text("Card 2")
+    Text("Card 3")
+}
+.tabViewStyle(.page(indexDisplayMode: .always))
 """
         
         case "NativeSegmentedControlShowcase":
@@ -791,33 +1175,7 @@ CustomSegmentedControl(configuration: CustomSegmentedControlConfiguration(
 ))
 """
         
-        case "CustomTabBar":
-            return """
-// Segmented Tab Bar
-CustomTabBar.segmented(
-    tabs: ["Home", "Search", "Profile"],
-    selectedIndex: 0
-) { index in
-    print("Tab selected: \\(index)")
-}
 
-// Floating Style
-CustomTabBar.floating(
-    tabs: ["Dashboard", "Analytics", "Settings"]
-)
-
-// With Icons and Badges
-CustomTabBar(configuration: CustomTabBarConfiguration(
-    tabs: [
-        TabItem(title: "Home", icon: "house"),
-        TabItem(title: "Messages", icon: "message", badge: 5),
-        TabItem(title: "Profile", icon: "person")
-    ],
-    style: .segmented,
-    showLabels: true
-))
-"""
-        
         case "CustomCard":
             return """
 // Simple Card
@@ -911,6 +1269,109 @@ CustomPicker.wheel(
 )
 """
         
+        case "NativeDatePickerShowcase":
+            return """
+// Native Compact DatePicker
+DatePicker(
+    "Event Date",
+    selection: $selectedDate,
+    displayedComponents: [.date]
+)
+.datePickerStyle(.compact)
+
+// Native Wheel DatePicker  
+DatePicker(
+    "Appointment Time",
+    selection: $selectedDateTime,
+    displayedComponents: [.date, .hourAndMinute]
+)
+.datePickerStyle(.wheel)
+.frame(height: 120)
+
+// Native Graphical DatePicker
+DatePicker(
+    "Calendar Date",
+    selection: $selectedDate,
+    displayedComponents: [.date]
+)
+.datePickerStyle(.graphical)
+"""
+        
+        case "NativeStepperShowcase":
+            return """
+// Native Standard Stepper
+Stepper("Quantity", value: $quantity, in: 0...20, step: 1)
+
+// Native Stepper with Value Display
+Stepper("Temperature: \\(temperature, specifier: "%.1f")", 
+        value: $temperature, in: -10...40, step: 0.5)
+
+// Native Stepper with Labels Hidden
+Stepper("Volume", value: $volume, in: 0...100, step: 5)
+    .labelsHidden()
+
+// Native Custom Format Stepper
+Stepper(value: $rating, in: 0...5, step: 0.5) {
+    HStack {
+        Text("Rating")
+        Spacer()
+        Text("\\(rating, specifier: "%.1f") ⭐")
+    }
+}
+"""
+        
+        case "NativeTextEditorShowcase":
+            return """
+// Native Standard TextEditor
+TextEditor(text: $notes)
+    .frame(height: 120)
+
+// Native Bordered TextEditor  
+TextEditor(text: $comments)
+    .padding(8)
+    .background(Color(.systemBackground))
+    .clipShape(RoundedRectangle(cornerRadius: 8))
+    .overlay(
+        RoundedRectangle(cornerRadius: 8)
+            .stroke(isFocused ? .blue : .gray, lineWidth: 1)
+    )
+
+// Native Backgrounded TextEditor
+TextEditor(text: $description)
+    .padding(12)
+    .scrollContentBackground(.hidden)
+    .background(Color(.systemGray6))
+    .clipShape(RoundedRectangle(cornerRadius: 12))
+"""
+        
+        case "NativeSecureFieldShowcase":
+            return """
+// Native Standard SecureField
+SecureField("Enter password", text: $password)
+
+// Native Bordered SecureField
+SecureField("Current password", text: $currentPassword)
+    .padding(12)
+    .background(Color(.systemBackground))
+    .clipShape(RoundedRectangle(cornerRadius: 8))
+    .overlay(
+        RoundedRectangle(cornerRadius: 8)
+            .stroke(isFocused ? .blue : .gray, lineWidth: 1)
+    )
+
+// Native SecureField with Visibility Toggle
+HStack {
+    if isVisible {
+        TextField("New password", text: $newPassword)
+    } else {
+        SecureField("New password", text: $newPassword)
+    }
+    Button(action: { isVisible.toggle() }) {
+        Image(systemName: isVisible ? "eye.slash" : "eye")
+    }
+}
+"""
+        
         default:
             return "// Code example coming soon..."
         }
@@ -956,24 +1417,188 @@ struct StatView: View {
                 .foregroundStyle(.secondary)
         }
     }
-}
+    }
+    
+    private var datePickerPreviewSection: some View {
+        VStack(spacing: 0) {
+            // Compact DatePicker Style
+            NativeDatePickerExample(
+                title: "Compact DatePicker Style",
+                description: "Compact button that expands to show date picker - great for forms",
+                label: "Event Date",
+                displayedComponents: [.date],
+                style: .compact
+            )
+            
+            Divider()
+                .padding(.horizontal)
+            
+            // Wheel DatePicker Style
+            NativeDatePickerExample(
+                title: "Wheel DatePicker Style",
+                description: "Traditional iOS spinning wheel date picker",
+                label: "Appointment Time",
+                displayedComponents: [.date, .hourAndMinute],
+                style: .wheel
+            )
+            
+            Divider()
+                .padding(.horizontal)
+            
+            // Graphical DatePicker Style
+            NativeDatePickerExample(
+                title: "Graphical DatePicker Style",
+                description: "Calendar-style graphical date picker - perfect for date selection",
+                label: "Calendar Date",
+                displayedComponents: [.date],
+                style: .graphical
+            )
+        }
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+    
+    private var stepperPreviewSection: some View {
+        VStack(spacing: 0) {
+            // Standard Stepper
+            NativeStepperExample(
+                title: "Standard Stepper Style",
+                description: "Standard stepper with label - perfect for quantity selection",
+                label: "Quantity",
+                value: 5,
+                range: 0...20,
+                step: 1,
+                displayStyle: .withLabel
+            )
+            
+            Divider()
+                .padding(.horizontal)
+            
+            // Value Display Stepper
+            NativeStepperExample(
+                title: "With Value Display",
+                description: "Shows current value in the label - great for settings",
+                label: "Temperature",
+                value: 20,
+                range: -10...40,
+                step: 0.5,
+                displayStyle: .withValue
+            )
+            
+            Divider()
+                .padding(.horizontal)
+            
+            // Labels Hidden Stepper
+            NativeStepperExample(
+                title: "Labels Hidden Style",
+                description: "Compact stepper with hidden labels - space-efficient",
+                label: "Volume",
+                value: 50,
+                range: 0...100,
+                step: 5,
+                displayStyle: .labelsHidden
+            )
+            
+            Divider()
+                .padding(.horizontal)
+            
+            // Custom Format Stepper
+            NativeStepperExample(
+                title: "Custom Format Style",
+                description: "Custom formatted display with separate value - highly flexible",
+                label: "Rating",
+                value: 3.5,
+                range: 0...5,
+                step: 0.5,
+                displayStyle: .customFormat
+            )
+        }
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+    
+    private var textEditorPreviewSection: some View {
+        VStack(spacing: 0) {
+            // Standard TextEditor
+            NativeTextEditorExample(
+                title: "Standard TextEditor Style",
+                description: "Standard multiline text editor - perfect for notes and descriptions",
+                style: .basic
+            )
+            
+            Divider()
+                .padding(.horizontal)
+            
+            // Bordered TextEditor
+            NativeTextEditorExample(
+                title: "TextEditor with Placeholder",
+                description: "TextEditor with placeholder text when empty",
+                style: .withPlaceholder
+            )
+            
+            Divider()
+                .padding(.horizontal)
+            
+            // Basic TextEditor
+            NativeTextEditorExample(
+                title: "Basic TextEditor Style",
+                description: "Simple TextEditor with no special styling",
+                style: .basic
+            )
+        }
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+    
+    private var secureFieldPreviewSection: some View {
+        VStack(spacing: 0) {
+            // Standard SecureField
+            NativeSecureFieldExample(
+                title: "Standard SecureField Style",
+                description: "Standard password field with hidden text - basic security",
+                hasToggle: false
+            )
+            
+            Divider()
+                .padding(.horizontal)
+            
+            // SecureField with Toggle
+            NativeSecureFieldExample(
+                title: "SecureField with Visibility Toggle",
+                description: "SecureField with show/hide password toggle button",
+                hasToggle: true
+            )
+            
+            Divider()
+                .padding(.horizontal)
+            
+            // Basic SecureField
+            NativeSecureFieldExample(
+                title: "Basic SecureField",
+                description: "Simple SecureField without visibility toggle",
+                hasToggle: false
+            )
+        }
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
 
-// MARK: - Native Component Examples
+// MARK: - Helper Example Structs for Native Components
+
+// MARK: - Button Helper Structs
+
+enum NativeButtonExampleStyle {
+    case automatic, bordered, borderedProminent, plain
+}
 
 struct NativeButtonExample: View {
     let title: String
     let description: String
-    let label: String
-    let style: ButtonStyleType
-    @State private var tapCount: Int = 0
-    
-    enum ButtonStyleType {
-        case automatic, bordered, borderedProminent, plain
-    }
+    let style: NativeButtonExampleStyle
+    let text: String
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Title and Description
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.headline)
@@ -984,37 +1609,126 @@ struct NativeButtonExample: View {
                     .foregroundStyle(.secondary)
             }
             
-            // Native Button with Different Styles
-            Group {
-                switch style {
-                case .automatic:
-                    Button(label) {
-                        tapCount += 1
-                    }
-                    .buttonStyle(.automatic)
-                    
-                case .bordered:
-                    Button(label) {
-                        tapCount += 1
-                    }
-                    .buttonStyle(.bordered)
-                    
-                case .borderedProminent:
-                    Button(label) {
-                        tapCount += 1
-                    }
-                    .buttonStyle(.borderedProminent)
-                    
-                case .plain:
-                    Button(label) {
-                        tapCount += 1
-                    }
-                    .buttonStyle(.plain)
+            switch style {
+            case .automatic:
+                Button(text) {
+                    // Action
                 }
+                .buttonStyle(.automatic)
+            case .bordered:
+                Button(text) {
+                    // Action
+                }
+                .buttonStyle(.bordered)
+            case .borderedProminent:
+                Button(text) {
+                    // Action
+                }
+                .buttonStyle(.borderedProminent)
+            case .plain:
+                Button(text) {
+                    // Action
+                }
+                .buttonStyle(.plain)
             }
             
-            // Interaction Feedback
-            Text("Tapped: \(tapCount) times")
+            Text("Tap to interact")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding()
+    }
+    
+
+}
+
+struct NativeButtonSizeExample: View {
+    let title: String
+    let description: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            VStack(spacing: 12) {
+                HStack(spacing: 8) {
+                    Button("Mini") { }
+                        .buttonStyle(.bordered)
+                        .controlSize(.mini)
+                    
+                    Button("Small") { }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
+                    
+                    Button("Regular") { }
+                        .buttonStyle(.bordered)
+                        .controlSize(.regular)
+                    
+                    Button("Large") { }
+                        .buttonStyle(.bordered)
+                        .controlSize(.large)
+                }
+                
+                Text("All native iOS control sizes")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .padding()
+    }
+}
+
+enum NativeSpecialButtonType {
+    case destructive, disabled, cancel
+}
+
+struct NativeSpecialButtonExample: View {
+    let title: String
+    let description: String
+    let type: NativeSpecialButtonType
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            switch type {
+            case .destructive:
+                Button("Delete", role: .destructive) {
+                    // Destructive action
+                }
+                .buttonStyle(.borderedProminent)
+                
+            case .disabled:
+                Button("Disabled Button") {
+                    // Action
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(true)
+                
+            case .cancel:
+                Button("Cancel", role: .cancel) {
+                    // Cancel action
+                }
+                .buttonStyle(.bordered)
+            }
+            
+            Text("Native button role and state")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
         }
@@ -1022,20 +1736,19 @@ struct NativeButtonExample: View {
     }
 }
 
-struct NativeToggleExample: View {
+enum NativeIconButtonPosition {
+    case leading, trailing, iconOnly
+}
+
+struct NativeIconButtonExample: View {
     let title: String
     let description: String
-    let label: String
-    @State var isOn: Bool
-    let style: ToggleStyleType
-    
-    enum ToggleStyleType {
-        case automatic, `switch`, button, checkbox
-    }
+    let iconPosition: NativeIconButtonPosition
+    let icon: String
+    let text: String
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Title and Description
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.headline)
@@ -1046,36 +1759,717 @@ struct NativeToggleExample: View {
                     .foregroundStyle(.secondary)
             }
             
-            // Native Toggle with Different Styles
-            Group {
-                switch style {
-                case .automatic:
-                    Toggle(label, isOn: $isOn)
-                        .toggleStyle(.automatic)
-                        
-                case .switch:
-                    Toggle(label, isOn: $isOn)
-                        .toggleStyle(.switch)
-                        
-                case .button:
-                    Toggle(label, isOn: $isOn)
-                        .toggleStyle(.button)
-                        
-                case .checkbox:
-                    Toggle(label, isOn: $isOn)
-                        .toggleStyle(.switch) // Fallback to switch on iOS
+            switch iconPosition {
+            case .leading:
+                Button(action: {}) {
+                    Label(text, systemImage: icon)
+                }
+                .buttonStyle(.borderedProminent)
+                
+            case .trailing:
+                Button(action: {}) {
+                    HStack {
+                        Text(text)
+                        Image(systemName: icon)
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                
+            case .iconOnly:
+                Button(action: {}) {
+                    Image(systemName: icon)
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            
+            Text("Native button with SF Symbols")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding()
+    }
+}
+
+// MARK: - Text Input Helper Structs
+
+struct NativeKeyboardTypeExample: View {
+    let title: String
+    let description: String
+    let keyboardType: UIKeyboardType
+    let placeholder: String
+    @State private var text: String = ""
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            TextField(placeholder, text: $text)
+                .textFieldStyle(.roundedBorder)
+                .keyboardType(keyboardType)
+            
+            Text("Keyboard type: \(keyboardTypeString)")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding()
+    }
+    
+    private var keyboardTypeString: String {
+        switch keyboardType {
+        case .emailAddress: return ".emailAddress"
+        case .numberPad: return ".numberPad"
+        case .phonePad: return ".phonePad"
+        case .URL: return ".URL"
+        case .decimalPad: return ".decimalPad"
+        default: return ".default"
+        }
+    }
+}
+
+struct NativeTextContentTypeExample: View {
+    let title: String
+    let description: String
+    let contentType: UITextContentType
+    let placeholder: String
+    @State private var text: String = ""
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            TextField(placeholder, text: $text)
+                .textFieldStyle(.roundedBorder)
+                .textContentType(contentType)
+                .autocapitalization(autocapitalization)
+            
+            Text("Content type: \(contentTypeString)")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding()
+    }
+    
+    private var contentTypeString: String {
+        switch contentType {
+        case .username: return ".username"
+        case .name: return ".name"
+        case .emailAddress: return ".emailAddress"
+        case .streetAddressLine1: return ".streetAddressLine1"
+        case .creditCardNumber: return ".creditCardNumber"
+        default: return "custom"
+        }
+    }
+    
+    private var autocapitalization: UITextAutocapitalizationType {
+        switch contentType {
+        case .emailAddress, .username: return .none
+        case .name: return .words
+        default: return .sentences
+        }
+    }
+}
+
+struct NativeSecureFieldExample: View {
+    let title: String
+    let description: String
+    let hasToggle: Bool
+    @State private var password: String = ""
+    @State private var isPasswordVisible: Bool = false
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            if hasToggle {
+                HStack {
+                    if isPasswordVisible {
+                        TextField("Password", text: $password)
+                            .textFieldStyle(.roundedBorder)
+                    } else {
+                        SecureField("Password", text: $password)
+                            .textFieldStyle(.roundedBorder)
+                    }
+                    
+                    Button(action: {
+                        isPasswordVisible.toggle()
+                    }) {
+                        Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            } else {
+                SecureField("Password", text: $password)
+                    .textFieldStyle(.roundedBorder)
+            }
+            
+            Text("Native SecureField component")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding()
+    }
+}
+
+enum NativeTextEditorExampleStyle {
+    case basic, withPlaceholder
+}
+
+struct NativeTextEditorExample: View {
+    let title: String
+    let description: String
+    let style: NativeTextEditorExampleStyle
+    @State private var text: String = ""
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            ZStack(alignment: .topLeading) {
+                TextEditor(text: $text)
+                    .frame(height: 100)
+                    .padding(4)
+                    .background(Color(.systemGray6))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                
+                if style == .withPlaceholder && text.isEmpty {
+                    Text("Enter your thoughts here...")
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 12)
+                        .allowsHitTesting(false)
                 }
             }
             
-            // Current State Display
+            Text("Native TextEditor for multiline input")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding()
+    }
+}
+
+enum NativeSearchFieldExampleStyle {
+    case list, withSuggestions
+}
+
+struct NativeSearchFieldExample: View {
+    let title: String
+    let description: String
+    let style: NativeSearchFieldExampleStyle
+    @State private var searchText: String = ""
+    @State private var items = ["Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig", "Grape"]
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            VStack {
+                switch style {
+                case .list:
+                    List(filteredItems, id: \.self) { item in
+                        Text(item)
+                    }
+                    .searchable(text: $searchText, prompt: "Search items")
+                    .frame(height: 150)
+                    
+                case .withSuggestions:
+                    VStack {
+                        TextField("Search with suggestions", text: $searchText)
+                            .textFieldStyle(.roundedBorder)
+                        
+                        if !searchText.isEmpty {
+                            ScrollView {
+                                LazyVStack(alignment: .leading, spacing: 4) {
+                                    ForEach(filteredItems, id: \.self) { item in
+                                        Button(item) {
+                                            searchText = item
+                                        }
+                                        .foregroundStyle(.primary)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
+                                }
+                            }
+                            .frame(height: 100)
+                            .background(Color(.systemGray6))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
+                    }
+                }
+            }
+            
+            Text("Native iOS search functionality")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding()
+    }
+    
+    private var filteredItems: [String] {
+        if searchText.isEmpty {
+            return items
+        } else {
+            return items.filter { $0.localizedCaseInsensitiveContains(searchText) }
+        }
+    }
+}
+
+// MARK: - Existing Helper Structs (for legacy components)
+
+public enum NativeToggleStyle {
+    case automatic, `switch`, button, checkbox
+}
+
+struct NativeToggleExample: View {
+    let title: String
+    let description: String
+    let style: NativeToggleStyle
+    @State private var isOn: Bool = false
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            switch style {
+            case .automatic:
+                Toggle("Toggle", isOn: $isOn)
+                    .toggleStyle(.automatic)
+            case .switch:
+                Toggle("Toggle", isOn: $isOn)
+                    .toggleStyle(.switch)
+            case .button:
+                Toggle("Toggle", isOn: $isOn)
+                    .toggleStyle(.button)
+            case .checkbox:
+                Toggle("Toggle", isOn: $isOn)
+                    .toggleStyle(.switch) // Fallback to switch on iOS
+            }
+            
             Text("Status: \(isOn ? "ON" : "OFF")")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
         }
         .padding()
     }
+    
+
+}
+
+public enum NativeDatePickerStyle {
+    case compact, wheel, graphical
+}
+
+struct NativeDatePickerExample: View {
+    let title: String
+    let description: String
+    let label: String
+    let displayedComponents: DatePicker.Components
+    let style: NativeDatePickerStyle
+    @State private var selectedDate: Date = Date()
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            switch style {
+            case .compact:
+                DatePicker(label, selection: $selectedDate, displayedComponents: displayedComponents)
+                    .datePickerStyle(.compact)
+                
+            case .wheel:
+                DatePicker(label, selection: $selectedDate, displayedComponents: displayedComponents)
+                    .datePickerStyle(.wheel)
+                    .frame(height: 120)
+                    .labelsHidden()
+                
+            case .graphical:
+                DatePicker(label, selection: $selectedDate, displayedComponents: displayedComponents)
+                    .datePickerStyle(.graphical)
+                    .labelsHidden()
+            }
+            
+            Text("Selected: \(selectedDate, formatter: dateFormatter)")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding()
+    }
+    
+    private var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        if displayedComponents.contains(.hourAndMinute) {
+            formatter.timeStyle = .short
+        }
+        return formatter
+    }
+}
+
+enum NativeTextFieldStyle {
+    case standard, roundedBorder, email, search, number
+}
+
+struct NativeTextFieldExample: View {
+    let title: String
+    let description: String
+    let style: NativeTextFieldStyle
+    @State private var text: String = ""
+    @State private var emailText: String = ""
+    @State private var numberText: String = ""
+    @State private var searchText: String = ""
+    @FocusState private var isFocused: Bool
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Title and Description
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            // Native TextField Examples
+            switch style {
+            case .standard:
+                TextField("Enter text", text: $text)
+                    .textFieldStyle(.plain)
+                    .padding(12)
+                    .background(Color(.systemGray6))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                
+            case .roundedBorder:
+                TextField("Enter text", text: $text)
+                    .textFieldStyle(.roundedBorder)
+                
+            case .email:
+                TextField("Enter email", text: $emailText)
+                    .textFieldStyle(.roundedBorder)
+                    .keyboardType(.emailAddress)
+                    .textContentType(.emailAddress)
+                    .autocapitalization(.none)
+                
+            case .search:
+                TextField("Search", text: $searchText)
+                    .textFieldStyle(.roundedBorder)
+                    .textContentType(.none)
+                    .overlay(
+                        HStack {
+                            Spacer()
+                            if !searchText.isEmpty {
+                                Button(action: {
+                                    searchText = ""
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding(.trailing, 8)
+                            }
+                        }
+                    )
+                
+            case .number:
+                TextField("Enter number", text: $numberText)
+                    .textFieldStyle(.roundedBorder)
+                    .keyboardType(.numberPad)
+            }
+            
+            // Status Display
+            Text("Current text: \(getCurrentText())")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding()
+    }
+    
+    private func getCurrentText() -> String {
+        switch style {
+        case .standard, .roundedBorder: return text.isEmpty ? "Empty" : text
+        case .email: return emailText.isEmpty ? "Empty" : emailText
+        case .search: return searchText.isEmpty ? "Empty" : searchText
+        case .number: return numberText.isEmpty ? "Empty" : numberText
+        }
+    }
+}
+
+enum NativeTabViewStyle {
+    case standard, page, pageAlwaysVisible
+}
+
+struct NativeTabViewExample: View {
+    let title: String
+    let description: String
+    let style: NativeTabViewStyle
+    @State private var selectedTab = 0
+    @State private var pageSelection = 0
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Title and Description
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            // Native TabView Examples
+            switch style {
+            case .standard:
+                TabView(selection: $selectedTab) {
+                    VStack {
+                        Image(systemName: "house.fill")
+                            .font(.largeTitle)
+                            .foregroundStyle(.blue)
+                        Text("Home")
+                            .font(.headline)
+                    }
+                    .tabItem {
+                        Image(systemName: "house")
+                        Text("Home")
+                    }
+                    .tag(0)
+                    
+                    VStack {
+                        Image(systemName: "magnifyingglass")
+                            .font(.largeTitle)
+                            .foregroundStyle(.green)
+                        Text("Search")
+                            .font(.headline)
+                    }
+                    .tabItem {
+                        Image(systemName: "magnifyingglass")
+                        Text("Search")
+                    }
+                    .tag(1)
+                }
+                .frame(height: 150)
+                .background(Color(.systemGray6))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                
+            case .page:
+                TabView(selection: $pageSelection) {
+                    VStack {
+                        Circle()
+                            .fill(.red.gradient)
+                            .frame(width: 60, height: 60)
+                        Text("Page 1")
+                            .font(.headline)
+                    }
+                    .tag(0)
+                    
+                    VStack {
+                        Circle()
+                            .fill(.blue.gradient)
+                            .frame(width: 60, height: 60)
+                        Text("Page 2")
+                            .font(.headline)
+                    }
+                    .tag(1)
+                    
+                    VStack {
+                        Circle()
+                            .fill(.green.gradient)
+                            .frame(width: 60, height: 60)
+                        Text("Page 3")
+                            .font(.headline)
+                    }
+                    .tag(2)
+                }
+                .tabViewStyle(.page)
+                .frame(height: 150)
+                .background(Color(.systemGray6))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                
+            case .pageAlwaysVisible:
+                TabView {
+                    VStack {
+                        Rectangle()
+                            .fill(.orange.gradient)
+                            .frame(height: 80)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        Text("Card 1")
+                            .font(.headline)
+                    }
+                    
+                    VStack {
+                        Rectangle()
+                            .fill(.pink.gradient)
+                            .frame(height: 80)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        Text("Card 2")
+                            .font(.headline)
+                    }
+                    
+                    VStack {
+                        Rectangle()
+                            .fill(.cyan.gradient)
+                            .frame(height: 80)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        Text("Card 3")
+                            .font(.headline)
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .always))
+                .frame(height: 140)
+                .background(Color(.systemGray6))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            
+            // Status Display
+            Text("Selected: \(getSelectionStatus())")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding()
+    }
+    
+    private func getSelectionStatus() -> String {
+        switch style {
+        case .standard: return "Tab \(selectedTab + 1)"
+        case .page: return "Page \(pageSelection + 1)"
+        case .pageAlwaysVisible: return "Swipe to navigate"
+        }
+    }
+}
+
+// MARK: - Missing Structs and Enums
+
+public enum NativeStepperDisplayStyle {
+    case withLabel, withValue, labelsHidden, customFormat
+}
+
+struct NativeStepperExample: View {
+    let title: String
+    let description: String
+    let label: String
+    let value: Double
+    let range: ClosedRange<Double>
+    let step: Double
+    let displayStyle: NativeStepperDisplayStyle
+    @State private var currentValue: Double
+    
+    init(title: String, description: String, label: String, value: Double, range: ClosedRange<Double>, step: Double, displayStyle: NativeStepperDisplayStyle) {
+        self.title = title
+        self.description = description
+        self.label = label
+        self.value = value
+        self.range = range
+        self.step = step
+        self.displayStyle = displayStyle
+        self._currentValue = State(initialValue: value)
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            switch displayStyle {
+            case .withLabel:
+                Stepper("\(label): \(Int(currentValue))", value: $currentValue, in: range, step: step)
+            case .withValue:
+                Stepper("\(label): \(currentValue, specifier: "%.1f")", value: $currentValue, in: range, step: step)
+            case .labelsHidden:
+                Stepper(value: $currentValue, in: range, step: step) {
+                    Text(label)
+                }
+                .labelsHidden()
+            case .customFormat:
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("\(label): \(currentValue, specifier: "%.1f") ⭐")
+                        .font(.subheadline)
+                    Stepper("", value: $currentValue, in: range, step: step)
+                        .labelsHidden()
+                }
+            }
+            
+            Text("Display style: .\(displayStyleString)")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding()
+    }
+    
+    private var displayStyleString: String {
+        switch displayStyle {
+        case .withLabel: return "withLabel"
+        case .withValue: return "withValue" 
+        case .labelsHidden: return "labelsHidden"
+        case .customFormat: return "customFormat"
+        }
+    }
 }
 
 #Preview {
     ContentView()
 }
+
