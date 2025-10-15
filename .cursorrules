@@ -47,6 +47,18 @@
       "command": "open context/TDD.md",
       "description": "Open the technical design document"
     },
+    "updateTaskList": {
+      "command": "open context/TaskList.md",
+      "description": "Open the task list for component implementation tracking"
+    },
+    "updateComponentRoadmap": {
+      "command": "open context/ComponentRoadmap.md",
+      "description": "Open the component roadmap for planning"
+    },
+    "updateShowcaseDesign": {
+      "command": "open context/ComponentShowcaseDesign.md",
+      "description": "Open the showcase design guidelines"
+    },
     "updateGitignore": {
       "command": "open .gitignore",
       "description": "Open the .gitignore file for updating"
@@ -65,6 +77,11 @@
     }
   },
   "snippets": {
+    "codeexample": {
+      "prefix": "ce",
+      "body": "CodeExample(\n    title: \"${1:Example Title}\",\n    description: \"${2:Description of what this example demonstrates}\",\n    category: .${3:basic},\n    code: #\"\"\"\nimport SwiftUI\n\n${4:// Your SwiftUI code here}\n\"\"\"\n    preview: {\n        AnyView(\n            ${5:// Preview implementation}\n        )\n    }\n)",
+      "description": "Create a new CodeExample with proper structure"
+    },
     "viewmodel": {
       "prefix": "vm",
       "body": "@MainActor\nfinal class ${1:Component}ViewModel: ObservableObject {\n    @Published private(set) var state: State\n    \n    func handleAction(_ action: Action) async throws {\n        // Handle action\n    }\n}",
@@ -79,6 +96,11 @@
       "prefix": "task",
       "body": "Task { [weak self] in\n    await self?.${1:performAction}()\n}",
       "description": "Create async task with weak self"
+    },
+    "nativecomponent": {
+      "prefix": "nc",
+      "body": "public struct ${1:ComponentName}Showcase: SwiftUIComponent {\n    public let configuration: ${1:ComponentName}Configuration\n    \n    public var body: some View {\n        VStack(spacing: 20) {\n            ${2:// Component implementation}\n        }\n        .padding()\n        .navigationTitle(configuration.displayName)\n    }\n    \n    public init(configuration: ${1:ComponentName}Configuration) {\n        self.configuration = configuration\n    }\n    \n    public init() {\n        self.configuration = ${1:ComponentName}Configuration()\n    }\n}",
+      "description": "Create a new native component showcase"
     }
   },
   "rules": [
@@ -87,11 +109,28 @@
       "description": "AI should always reference context files when providing assistance",
       "trigger": "ai-request",
       "action": "notification",
-      "message": "🧠 Remember to reference context files: context.md, TechStack.md, TDD.md for project context",
+      "message": "🧠 Reference context files: context.md, TaskList.md, ComponentRoadmap.md, ComponentShowcaseDesign.md, TDD.md for project context",
       "commands": []
     },
     {
-      "name": "Update Context After Sessions",
+      "name": "Code Examples Priority",
+      "description": "Focus on expanding code examples for production readiness",
+      "trigger": "ai-request",
+      "action": "notification", 
+      "message": "🚀 PRIORITY: Continue expanding CodeExamplesProvider with more comprehensive examples. Use proper #\"\"\" raw string escaping and AnyView previews.",
+      "commands": ["updateContext"]
+    },
+    {
+      "name": "Native Components Only",
+      "description": "Ensure only native iOS components are implemented",
+      "trigger": "file-changed",
+      "pattern": "**/*Showcase.swift",
+      "action": "notification",
+      "message": "✅ NATIVE ONLY: Ensure this component uses only native iOS/SwiftUI APIs - no custom implementations",
+      "commands": []
+    },
+    {
+      "name": "Update Context After Major Changes",
       "description": "Update context files after significant development sessions",
       "trigger": "file-changed",
       "pattern": "**/*.swift",
@@ -101,18 +140,17 @@
       "commands": ["updateContext"]
     },
     {
-      "name": "Update Design Document",
-      "description": "Remember to update the Design Document when making architectural changes",
+      "name": "Code Examples Quality Check",
+      "description": "Ensure code examples meet production standards",
       "trigger": "file-changed",
-      "pattern": "**/*.swift",
-      "minChanges": 10,
+      "pattern": "**/ContentView.swift",
       "action": "notification",
-      "message": "📐 Don't forget to update context/TDD.md with architectural changes!",
-      "commands": ["updateDesignDoc"]
+      "message": "🔍 Code Examples Quality: Ensure proper #\"\"\" escaping, AnyView previews, copy-paste ready code, and interactive demonstrations",
+      "commands": []
     },
     {
-      "name": "Build Check Before Commit",
-      "description": "Build the project to check for errors before committing",
+      "name": "Build Check Before Major Changes",
+      "description": "Build the project to check for errors before major changes",
       "trigger": "pre-commit",
       "pattern": "**/*.swift",
       "action": "notification",
@@ -120,40 +158,61 @@
       "commands": ["buildSwiftUIComponents"]
     },
     {
-      "name": "Build and Validate After Major Changes",
-      "description": "Build and run the app after significant changes",
+      "name": "Component Showcase Design Compliance",
+      "description": "Ensure component showcases follow design guidelines",
+      "trigger": "file-created",
+      "pattern": "**/*Showcase.swift",
+      "action": "notification",
+      "message": "🎨 New component showcase created. Ensure compliance with ComponentShowcaseDesign.md guidelines: Native First, Interactive Examples, Clean Layout",
+      "commands": ["updateShowcaseDesign"]
+    },
+    {
+      "name": "MapKit Issue Priority",
+      "description": "Address MapKit yellow grid issue when working on MapKit components",
+      "trigger": "file-changed",
+      "pattern": "**/MapKitShowcase.swift",
+      "action": "notification",
+      "message": "🗺️ MapKit Issue: Fix yellow grid display - likely needs proper region setup and location permissions handling",
+      "commands": []
+    },
+    {
+      "name": "Production Readiness Check",
+      "description": "Ensure production-ready quality for all implementations",
       "trigger": "file-changed",
       "pattern": "**/*.swift",
-      "minChanges": 20,
+      "minChanges": 10,
       "action": "notification",
-      "message": "🚀 Significant changes detected. Consider building and running the app to validate changes.",
-      "commands": ["buildSwiftUIComponents", "listSimulators"]
+      "message": "🚀 Production Check: Ensure error handling, accessibility, proper Swift patterns, and comprehensive documentation",
+      "commands": ["buildWarnings"]
     },
     {
-      "name": "Context File Maintenance",
-      "description": "Keep context files up to date with project evolution",
+      "name": "Individual Component Download Preparation",
+      "description": "Keep in mind future individual component download capability",
       "trigger": "file-changed",
-      "pattern": "context/**/*.md",
+      "pattern": "**/CodeExamplesProvider*",
       "action": "notification",
-      "message": "📚 Context files updated. Ensure all team members are aware of changes.",
+      "message": "💾 Future Feature: Structure code examples for individual component download capability - keep examples modular and self-contained",
       "commands": []
-    },
-    {
-      "name": "SwiftUI Best Practices Check",
-      "description": "Remind about SwiftUI best practices when creating new views",
-      "trigger": "file-created",
-      "pattern": "**/*View.swift",
-      "action": "notification",
-      "message": "🎨 New SwiftUI view created. Remember: @MainActor for ViewModels, weak self in async tasks, and add #Preview",
-      "commands": []
-    },
-    {
-      "name": "Generate Git Commit Message",
-      "description": "Generates a summary in git commit message format at the end of each request",
-      "trigger": "post-completion",
-      "action": "notification",
-      "message": "📝 Git Commit Summary: {{AI will generate a concise summary of changes here}}",
-      "commands": ["generateCommitMessage"]
     }
-  ]
+  ],
+  "projectStatus": {
+    "phase": "Production-Ready Code Examples Expansion",
+    "completion": "100% Native Components + Active Code Examples Implementation",
+    "priorities": [
+      "Expand CodeExamplesProvider with more comprehensive examples",
+      "Fix MapKit yellow grid display issue", 
+      "Continue adding interactive code examples for high-impact components",
+      "Maintain production-ready quality standards",
+      "Prepare architecture for individual component downloads"
+    ],
+    "achievements": [
+      "✅ 49/49 Native iOS Components implemented",
+      "✅ Production-ready code examples system with live previews",
+      "✅ Fixed Alert and ActionSheet 'Preview coming soon' issues", 
+      "✅ Consistent UI with white backgrounds and borders",
+      "✅ Conditional code examples display (better UX)",
+      "✅ Interactive code examples with copy-to-clipboard",
+      "✅ Proper Swift string escaping with #\"\"\" raw strings"
+    ]
+  }
 } 

@@ -321,14 +321,6 @@ public class ComponentRegistry: ObservableObject {
                 isImplemented: true
             ),
             ComponentModel(
-                id: "NavigationViewShowcase",
-                displayName: "NavigationView",
-                category: .navigation,
-                description: "Legacy NavigationView for iOS 15 compatibility",
-                minimumIOSVersion: "15.0",
-                isImplemented: false
-            ),
-            ComponentModel(
                 id: "SheetPresentationShowcase",
                 displayName: "Sheet Presentations",
                 category: .navigation,

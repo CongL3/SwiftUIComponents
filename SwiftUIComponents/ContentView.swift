@@ -43,26 +43,26 @@ struct ComponentCategoryListView: View {
     
     private var headerView: some View {
         VStack(spacing: 12) {
-            Image(systemName: "rectangle.3.group.bubble")
-                .font(.system(size: 60))
-                .foregroundStyle(.blue)
-            
-            Text("SwiftUI Components")
-                .font(.title)
-                .fontWeight(.bold)
+//            Image(systemName: "rectangle.3.group.bubble")
+//                .font(.system(size: 60))
+//                .foregroundStyle(.blue)
+//            
+//            Text("SwiftUI Components")
+//                .font(.title)
+//                .fontWeight(.bold)
             
             Text("A showcase of reusable SwiftUI components")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .fontWeight(.bold)
                 .multilineTextAlignment(.center)
             
             // Stats
-            HStack(spacing: 24) {
-                StatView(title: "Categories", value: "\(ComponentCategory.allCases.count)")
-                StatView(title: "Components", value: "\(componentRegistry.components.count)")
-                StatView(title: "Complete", value: "\(componentRegistry.components.filter { $0.isImplemented }.count)")
-            }
-            .padding(.top, 8)
+//            HStack(spacing: 24) {
+//                StatView(title: "Categories", value: "\(ComponentCategory.allCases.count)")
+//                StatView(title: "Components", value: "\(componentRegistry.components.count)")
+//                StatView(title: "Complete", value: "\(componentRegistry.components.filter { $0.isImplemented }.count)")
+//            }
+//            .padding(.top, 8)
         }
         .padding(.vertical, 20)
     }
@@ -231,10 +231,28 @@ struct ComponentDetailView: View {
                             .font(.headline)
                         
                         componentPreview
+                            .padding()
+                            .background(Color(.systemBackground))
+                            .cornerRadius(12)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color(.systemGray5), lineWidth: 1)
+                            )
                     }
                     
                     // Code Snippet
                     CodeSnippetView(component: component)
+                    
+                    // Code Examples
+                    let examples = CodeExamplesProvider.getExamples(for: component.id)
+                    if !examples.isEmpty {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Code Examples")
+                                .font(.headline)
+                            
+                            CodeExamplesSection(component: component, examples: examples)
+                        }
+                    }
                 }
                 
                 Spacer()
@@ -305,6 +323,10 @@ struct ComponentDetailView: View {
             ProgressViewShowcase()
         case "ColorPickerShowcase":
             ColorPickerShowcase()
+        case "NativeAlertShowcase":
+            NativeAlertShowcase()
+        case "NativeActionSheetShowcase":
+            NativeActionSheetShowcase()
         case "NavigationStackShowcase":
             NavigationStackShowcase()
         case "ImageShowcase":
@@ -2534,6 +2556,1390 @@ struct NativeStepperExample: View {
         case .labelsHidden: return "labelsHidden"
         case .customFormat: return "customFormat"
         }
+    }
+}
+
+// MARK: - Code Examples System
+struct CodeExample {
+    let title: String
+    let description: String
+    let category: CodeExampleCategory
+    let code: String
+    let preview: () -> AnyView
+}
+
+enum CodeExampleCategory: String, CaseIterable {
+    case basic = "Basic Usage"
+    case advanced = "Advanced Configuration"
+    case realWorld = "Real-World Implementation"
+    case integration = "Integration Examples"
+    
+    var color: Color {
+        switch self {
+        case .basic: return .blue
+        case .advanced: return .orange
+        case .realWorld: return .green
+        case .integration: return .purple
+        }
+    }
+}
+
+struct CodeExamplesSection: View {
+    let component: ComponentModel
+    let examples: [CodeExample]
+    
+    var body: some View {
+        LazyVGrid(columns: [
+            GridItem(.flexible()),
+            GridItem(.flexible())
+        ], spacing: 16) {
+            ForEach(examples.indices, id: \.self) { index in
+                CodeExampleCard(example: examples[index])
+            }
+        }
+        .padding()
+    }
+}
+
+struct CodeExampleCard: View {
+    let example: CodeExample
+    @State private var showingDetail = false
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Category badge
+            HStack {
+                Text(example.category.rawValue)
+                    .font(.caption)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(example.category.color.opacity(0.2))
+                    .foregroundColor(example.category.color)
+                    .cornerRadius(6)
+                Spacer()
+            }
+            
+            // Title and description
+            VStack(alignment: .leading, spacing: 4) {
+                Text(example.title)
+                    .font(.headline)
+                    .lineLimit(2)
+                
+                Text(example.description)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .lineLimit(3)
+            }
+            
+            // Preview
+            example.preview()
+                .frame(height: 80)
+                .background(.gray.opacity(0.1))
+                .cornerRadius(8)
+            
+            Spacer()
+        }
+        .padding()
+        .background(.gray.opacity(0.05))
+        .cornerRadius(12)
+        .onTapGesture {
+            showingDetail = true
+        }
+        .sheet(isPresented: $showingDetail) {
+            CodeExampleDetailView(example: example)
+        }
+    }
+}
+
+struct CodeExampleDetailView: View {
+    let example: CodeExample
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    // Header
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text(example.category.rawValue)
+                                .font(.caption)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(example.category.color.opacity(0.2))
+                                .foregroundColor(example.category.color)
+                                .cornerRadius(6)
+                            Spacer()
+                        }
+                        
+                        Text(example.title)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        
+                        Text(example.description)
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    // Preview
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Preview")
+                            .font(.headline)
+                        
+                        example.preview()
+                            .frame(minHeight: 120)
+                            .background(.gray.opacity(0.1))
+                            .cornerRadius(12)
+                    }
+                    
+                    // Code
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Code")
+                                .font(.headline)
+                            
+                            Spacer()
+                            
+                            Button("Copy") {
+                                copyToClipboard()
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                        }
+                        
+                        ScrollView {
+                            Text(example.code)
+                                .font(.system(.caption, design: .monospaced))
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(.gray.opacity(0.1))
+                                .cornerRadius(8)
+                        }
+                        .frame(maxHeight: 300)
+                    }
+                    
+                    Spacer(minLength: 50)
+                }
+                .padding()
+            }
+            .navigationTitle("Code Example")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+    
+    private func copyToClipboard() {
+        #if os(iOS)
+        UIPasteboard.general.string = example.code
+        #elseif os(macOS)
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(example.code, forType: .string)
+        #endif
+    }
+}
+
+// MARK: - Code Examples Provider
+struct CodeExamplesProvider {
+    static func getExamples(for componentId: String) -> [CodeExample] {
+        switch componentId {
+        case "ProgressViewShowcase":
+            return progressViewExamples
+        case "ColorPickerShowcase":
+            return colorPickerExamples
+        case "NativeAlertShowcase":
+            return alertExamples
+        case "NativeActionSheetShowcase":
+            return actionSheetExamples
+        case "NavigationStackShowcase":
+            return navigationExamples
+        case "StandardButtons":
+            return buttonExamples
+        case "FormShowcase":
+            return formExamples
+        case "ListStylesShowcase":
+            return listExamples
+        case "ImageShowcase":
+            return imageExamples
+        default:
+            return []
+        }
+    }
+    
+    // MARK: - Progress View Examples
+    static var progressViewExamples: [CodeExample] {
+        [
+            CodeExample(
+                title: "Basic Progress Views",
+                description: "Essential progress indicators for loading states",
+                category: .basic,
+                code: #"""
+import SwiftUI
+
+struct BasicProgressViews: View {
+    @State private var progress: Double = 0.0
+    @State private var isLoading = false
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            // Indeterminate circular progress
+            ProgressView()
+                .progressViewStyle(.circular)
+            
+            // Indeterminate linear progress
+            ProgressView()
+                .progressViewStyle(.linear)
+            
+            // Determinate circular progress
+            ProgressView(value: progress)
+                .progressViewStyle(.circular)
+            
+            // Determinate linear progress
+            ProgressView(value: progress)
+                .progressViewStyle(.linear)
+            
+            // Progress with label
+            ProgressView("Loading...", value: progress, total: 1.0)
+                .progressViewStyle(.linear)
+            
+            Button("Animate Progress") {
+                withAnimation(.linear(duration: 2)) {
+                    progress = progress == 0 ? 1 : 0
+                }
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .padding()
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        VStack(spacing: 8) {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .controlSize(.small)
+                            
+                            ProgressView(value: 0.6)
+                                .progressViewStyle(.linear)
+                                .frame(width: 100)
+                        }
+                    )
+                }
+            ),
+            CodeExample(
+                title: "Styled Progress Views",
+                description: "Customized progress indicators with colors and styling",
+                category: .advanced,
+                code: #"""
+import SwiftUI
+
+struct StyledProgressViews: View {
+    @State private var downloadProgress: Double = 0.0
+    @State private var uploadProgress: Double = 0.0
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            // Custom colored progress
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Download Progress")
+                    .font(.headline)
+                
+                ProgressView(value: downloadProgress)
+                    .progressViewStyle(.linear)
+                    .tint(.blue)
+                    .scaleEffect(y: 2)
+                
+                Text("\(Int(downloadProgress * 100))% Complete")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            // Multi-colored progress
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Upload Progress")
+                    .font(.headline)
+                
+                ProgressView(value: uploadProgress)
+                    .progressViewStyle(.linear)
+                    .tint(uploadProgress < 0.3 ? .red : uploadProgress < 0.7 ? .orange : .green)
+                    .scaleEffect(y: 3)
+                
+                Text(progressLabel(for: uploadProgress))
+                    .font(.caption)
+                    .foregroundColor(uploadProgress < 0.3 ? .red : uploadProgress < 0.7 ? .orange : .green)
+            }
+            
+            // Circular progress with overlay
+            ZStack {
+                ProgressView(value: downloadProgress)
+                    .progressViewStyle(.circular)
+                    .tint(.purple)
+                    .scaleEffect(2)
+                
+                Text("\(Int(downloadProgress * 100))%")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+            }
+            
+            HStack {
+                Button("Start Download") {
+                    animateProgress(progress: $downloadProgress)
+                }
+                .buttonStyle(.bordered)
+                
+                Button("Start Upload") {
+                    animateProgress(progress: $uploadProgress)
+                }
+                .buttonStyle(.bordered)
+            }
+        }
+        .padding()
+    }
+    
+    private func progressLabel(for progress: Double) -> String {
+        if progress < 0.3 {
+            return "Starting..."
+        } else if progress < 0.7 {
+            return "In Progress..."
+        } else {
+            return "Almost Done!"
+        }
+    }
+    
+    private func animateProgress(progress: Binding<Double>) {
+        progress.wrappedValue = 0
+        withAnimation(.linear(duration: 3)) {
+            progress.wrappedValue = 1.0
+        }
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        VStack(spacing: 8) {
+                            ProgressView(value: 0.7)
+                                .progressViewStyle(.linear)
+                                .tint(.blue)
+                                .scaleEffect(y: 1.5)
+                            
+                            ZStack {
+                                ProgressView(value: 0.7)
+                                    .progressViewStyle(.circular)
+                                    .tint(.purple)
+                                    .controlSize(.small)
+                                
+                                Text("70%")
+                                    .font(.caption2)
+                                    .fontWeight(.semibold)
+                            }
+                        }
+                    )
+                }
+            )
+        ]
+    }
+    
+    // MARK: - Color Picker Examples
+    static var colorPickerExamples: [CodeExample] {
+        [
+            CodeExample(
+                title: "Basic Color Picker",
+                description: "Simple color selection for user preferences",
+                category: .basic,
+                code: #"""
+import SwiftUI
+
+struct BasicColorPicker: View {
+    @State private var selectedColor = Color.blue
+    @State private var backgroundColor = Color.white
+    @State private var textColor = Color.black
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            // Simple color picker
+            ColorPicker("Choose Color", selection: $selectedColor)
+            
+            // Color picker without label
+            HStack {
+                Text("Background:")
+                Spacer()
+                ColorPicker("", selection: $backgroundColor)
+                    .labelsHidden()
+                    .frame(width: 50)
+            }
+            
+            // Preview with selected colors
+            Text("Preview Text")
+                .font(.title)
+                .foregroundStyle(textColor)
+                .padding()
+                .background(backgroundColor)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(selectedColor, lineWidth: 2)
+                )
+            
+            // Text color picker
+            ColorPicker("Text Color", selection: $textColor)
+        }
+        .padding()
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        VStack(spacing: 8) {
+                            HStack {
+                                Text("Color:")
+                                    .font(.caption)
+                                Spacer()
+                                ColorPicker("", selection: .constant(.blue))
+                                    .labelsHidden()
+                                    .frame(width: 30)
+                            }
+                            
+                            Rectangle()
+                                .fill(.blue)
+                                .frame(height: 20)
+                                .clipShape(RoundedRectangle(cornerRadius: 4))
+                        }
+                    )
+                }
+            )
+        ]
+    }
+    
+    // MARK: - Alert Examples
+    static var alertExamples: [CodeExample] {
+        [
+            CodeExample(
+                title: "Basic Alert",
+                description: "Simple alerts with OK button",
+                category: .basic,
+                code: #"""
+import SwiftUI
+
+struct BasicAlertExample: View {
+    @State private var showingAlert = false
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Button("Show Basic Alert") {
+                showingAlert = true
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .padding()
+        .alert("Alert Title", isPresented: $showingAlert) {
+            Button("OK") { }
+        } message: {
+            Text("This is a basic alert message.")
+        }
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        Button("Show Basic Alert") { }
+                            .buttonStyle(.borderedProminent)
+                            .padding()
+                    )
+                }
+            ),
+            CodeExample(
+                title: "Confirmation Alert",
+                description: "Alerts with multiple actions and roles",
+                category: .advanced,
+                code: #"""
+import SwiftUI
+
+struct ConfirmationAlertExample: View {
+    @State private var showingDeleteAlert = false
+    @State private var result = ""
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Button("Delete Item") {
+                showingDeleteAlert = true
+            }
+            .buttonStyle(.bordered)
+            .tint(.red)
+            
+            if !result.isEmpty {
+                Text("Result: \(result)")
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding()
+        .alert("Delete Item", isPresented: $showingDeleteAlert) {
+            Button("Delete", role: .destructive) {
+                result = "Deleted"
+            }
+            Button("Cancel", role: .cancel) {
+                result = "Cancelled"
+            }
+        } message: {
+            Text("Are you sure you want to delete this item? This action cannot be undone.")
+        }
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        VStack(spacing: 15) {
+                            Button("Delete Item") { }
+                                .buttonStyle(.bordered)
+                                .tint(.red)
+                            Text("Interactive in app")
+                                .foregroundColor(.secondary)
+                        }
+                        .padding()
+                    )
+                }
+            )
+        ]
+    }
+    
+    // MARK: - Action Sheet Examples
+    static var actionSheetExamples: [CodeExample] {
+        [
+            CodeExample(
+                title: "Basic Action Sheet",
+                description: "Simple action sheet with multiple options",
+                category: .basic,
+                code: #"""
+import SwiftUI
+
+struct BasicActionSheetExample: View {
+    @State private var showingActionSheet = false
+    @State private var selectedAction = ""
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Button("Show Action Sheet") {
+                showingActionSheet = true
+            }
+            .buttonStyle(.borderedProminent)
+            
+            if !selectedAction.isEmpty {
+                Text("Selected: \(selectedAction)")
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding()
+        .confirmationDialog("Choose Action", isPresented: $showingActionSheet) {
+            Button("Option 1") { selectedAction = "Option 1" }
+            Button("Option 2") { selectedAction = "Option 2" }
+            Button("Option 3") { selectedAction = "Option 3" }
+            Button("Cancel", role: .cancel) { }
+        }
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        VStack(spacing: 20) {
+                            Button("Show Action Sheet") { }
+                                .buttonStyle(.borderedProminent)
+                            Text("Interactive in app")
+                                .foregroundColor(.secondary)
+                        }
+                        .padding()
+                    )
+                }
+            ),
+            CodeExample(
+                title: "Destructive Action Sheet",
+                description: "Action sheet with destructive actions",
+                category: .advanced,
+                code: #"""
+import SwiftUI
+
+struct DestructiveActionSheetExample: View {
+    @State private var showingActionSheet = false
+    @State private var result = ""
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Button("Account Actions") {
+                showingActionSheet = true
+            }
+            .buttonStyle(.bordered)
+            
+            if !result.isEmpty {
+                Text("Action: \(result)")
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding()
+        .confirmationDialog("Account Actions", isPresented: $showingActionSheet) {
+            Button("Edit Profile") { result = "Edit Profile" }
+            Button("Change Password") { result = "Change Password" }
+            Button("Export Data") { result = "Export Data" }
+            Button("Delete Account", role: .destructive) { result = "Delete Account" }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Choose an action for your account")
+        }
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        VStack(spacing: 20) {
+                            Button("Account Actions") { }
+                                .buttonStyle(.bordered)
+                            Text("Interactive in app")
+                                .foregroundColor(.secondary)
+                        }
+                        .padding()
+                    )
+                }
+            )
+        ]
+    }
+    
+    // MARK: - Navigation Examples
+    static var navigationExamples: [CodeExample] {
+        [
+            CodeExample(
+                title: "Basic Navigation",
+                description: "Simple navigation between views",
+                category: .basic,
+                code: #"""
+import SwiftUI
+
+struct BasicNavigationExample: View {
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 20) {
+                NavigationLink("Go to Detail") {
+                    DetailView()
+                }
+                .buttonStyle(.borderedProminent)
+                
+                NavigationLink("Go to Settings") {
+                    SettingsView()
+                }
+                .buttonStyle(.bordered)
+            }
+            .navigationTitle("Home")
+        }
+    }
+}
+
+struct DetailView: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("This is the detail view")
+            
+            NavigationLink("Go Deeper") {
+                Text("Deep View")
+                    .navigationTitle("Deep View")
+            }
+            .buttonStyle(.bordered)
+        }
+        .navigationTitle("Detail")
+    }
+}
+
+struct SettingsView: View {
+    var body: some View {
+        List {
+            Section("Preferences") {
+                HStack {
+                    Text("Notifications")
+                    Spacer()
+                    Toggle("", isOn: .constant(true))
+                }
+                
+                HStack {
+                    Text("Dark Mode")
+                    Spacer()
+                    Toggle("", isOn: .constant(false))
+                }
+            }
+        }
+        .navigationTitle("Settings")
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        VStack(spacing: 20) {
+                            Button("Go to Detail") { }
+                                .buttonStyle(.borderedProminent)
+                            Button("Go to Settings") { }
+                                .buttonStyle(.bordered)
+                        }
+                        .padding()
+                    )
+                }
+            )
+        ]
+    }
+    
+    // MARK: - Button Examples
+    static var buttonExamples: [CodeExample] {
+        [
+            CodeExample(
+                title: "Button Styles",
+                description: "Native iOS button styles and appearances",
+                category: .basic,
+                code: #"""
+import SwiftUI
+
+struct ButtonStylesExample: View {
+    var body: some View {
+        VStack(spacing: 15) {
+            Button("Plain") { }
+                .buttonStyle(.plain)
+            
+            Button("Bordered") { }
+                .buttonStyle(.bordered)
+            
+            Button("Bordered Prominent") { }
+                .buttonStyle(.borderedProminent)
+            
+            Button("Borderless") { }
+                .buttonStyle(.borderless)
+        }
+        .padding()
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        VStack(spacing: 15) {
+                            Button("Plain") { }
+                                .buttonStyle(.plain)
+                            Button("Bordered") { }
+                                .buttonStyle(.bordered)
+                            Button("Bordered Prominent") { }
+                                .buttonStyle(.borderedProminent)
+                            Button("Borderless") { }
+                                .buttonStyle(.borderless)
+                        }
+                        .padding()
+                    )
+                }
+            ),
+            CodeExample(
+                title: "Interactive Buttons",
+                description: "Loading states, toggles, and dynamic content",
+                category: .realWorld,
+                code: #"""
+import SwiftUI
+
+struct InteractiveButtonsExample: View {
+    @State private var isLoading = false
+    @State private var isFavorited = false
+    @State private var count = 0
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            // Loading button
+            Button(action: { toggleLoading() }) {
+                HStack {
+                    if isLoading {
+                        ProgressView()
+                            .scaleEffect(0.8)
+                    }
+                    Text(isLoading ? "Loading..." : "Load Data")
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(isLoading)
+            
+            // Toggle button
+            Button(action: { isFavorited.toggle() }) {
+                Label(
+                    isFavorited ? "Favorited" : "Add to Favorites",
+                    systemImage: isFavorited ? "heart.fill" : "heart"
+                )
+            }
+            .buttonStyle(.bordered)
+            .tint(isFavorited ? .red : .blue)
+            
+            // Counter button
+            Button("Count: \(count)") {
+                withAnimation(.spring()) {
+                    count += 1
+                }
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding()
+    }
+    
+    private func toggleLoading() {
+        isLoading = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            isLoading = false
+        }
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        VStack(spacing: 20) {
+                            Button("Load Data") { }
+                                .buttonStyle(.borderedProminent)
+                            
+                            Button(action: {}) {
+                                Label("Add to Favorites", systemImage: "heart")
+                            }
+                            .buttonStyle(.bordered)
+                            
+                            Button("Count: 0") { }
+                                .buttonStyle(.bordered)
+                        }
+                        .padding()
+                    )
+                }
+            )
+        ]
+    }
+    
+    // MARK: - Form Examples
+    static var formExamples: [CodeExample] {
+        [
+            CodeExample(
+                title: "Basic Form",
+                description: "Simple form with text fields and toggles",
+                category: .basic,
+                code: #"""
+import SwiftUI
+
+struct BasicFormExample: View {
+    @State private var name = ""
+    @State private var email = ""
+    @State private var isSubscribed = false
+    @State private var notifications = true
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                Section("Personal Information") {
+                    TextField("Name", text: $name)
+                    TextField("Email", text: $email)
+                        .keyboardType(.emailAddress)
+                        .autocapitalization(.none)
+                }
+                
+                Section("Preferences") {
+                    Toggle("Newsletter Subscription", isOn: $isSubscribed)
+                    Toggle("Push Notifications", isOn: $notifications)
+                }
+                
+                Section {
+                    Button("Submit") {
+                        // Handle form submission
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+            }
+            .navigationTitle("Basic Form")
+        }
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        Form {
+                            Section("Personal Information") {
+                                TextField("Name", text: .constant(""))
+                                TextField("Email", text: .constant(""))
+                            }
+                            Section("Preferences") {
+                                Toggle("Newsletter Subscription", isOn: .constant(false))
+                                Toggle("Push Notifications", isOn: .constant(true))
+                            }
+                        }
+                        .frame(height: 200)
+                    )
+                }
+            ),
+            CodeExample(
+                title: "Advanced Form with Validation",
+                description: "Form with input validation and error handling",
+                category: .advanced,
+                code: #"""
+import SwiftUI
+
+struct AdvancedFormExample: View {
+    @State private var firstName = ""
+    @State private var lastName = ""
+    @State private var email = ""
+    @State private var password = ""
+    @State private var birthDate = Date()
+    @State private var selectedCountry = "United States"
+    @State private var agreeToTerms = false
+    @State private var showingErrors = false
+    
+    let countries = ["United States", "Canada", "United Kingdom", "Germany"]
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                Section("Personal Details") {
+                    HStack {
+                        TextField("First Name", text: $firstName)
+                        TextField("Last Name", text: $lastName)
+                    }
+                    
+                    TextField("Email", text: $email)
+                        .keyboardType(.emailAddress)
+                        .autocapitalization(.none)
+                        .overlay(alignment: .trailing) {
+                            if !email.isEmpty && !isValidEmail {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundColor(.red)
+                            }
+                        }
+                    
+                    DatePicker("Birth Date", selection: $birthDate, displayedComponents: .date)
+                    
+                    Picker("Country", selection: $selectedCountry) {
+                        ForEach(countries, id: \.self) { country in
+                            Text(country).tag(country)
+                        }
+                    }
+                }
+                
+                Section("Security") {
+                    SecureField("Password", text: $password)
+                        .overlay(alignment: .trailing) {
+                            if !password.isEmpty && !isValidPassword {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundColor(.red)
+                            }
+                        }
+                }
+                
+                Section("Terms") {
+                    Toggle("I agree to the Terms of Service", isOn: $agreeToTerms)
+                }
+                
+                Section {
+                    Button("Create Account") {
+                        if isFormValid {
+                            // Handle account creation
+                        } else {
+                            showingErrors = true
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .disabled(!isFormValid)
+                }
+            }
+            .navigationTitle("Sign Up")
+            .alert("Form Errors", isPresented: $showingErrors) {
+                Button("OK") { }
+            } message: {
+                Text("Please fill in all required fields correctly.")
+            }
+        }
+    }
+    
+    private var isValidEmail: Bool {
+        email.contains("@") && email.contains(".")
+    }
+    
+    private var isValidPassword: Bool {
+        password.count >= 8
+    }
+    
+    private var isFormValid: Bool {
+        !firstName.isEmpty && !lastName.isEmpty && isValidEmail && isValidPassword && agreeToTerms
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        Form {
+                            Section("Personal Details") {
+                                TextField("First Name", text: .constant(""))
+                                TextField("Email", text: .constant(""))
+                            }
+                            Section("Security") {
+                                SecureField("Password", text: .constant(""))
+                            }
+                        }
+                        .frame(height: 150)
+                    )
+                }
+            )
+        ]
+    }
+    
+    // MARK: - List Examples
+    static var listExamples: [CodeExample] {
+        [
+            CodeExample(
+                title: "List Styles",
+                description: "Different native list styles and appearances",
+                category: .basic,
+                code: #"""
+import SwiftUI
+
+struct ListStylesExample: View {
+    let items = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"]
+    
+    var body: some View {
+        NavigationView {
+            VStack {
+                Text("Plain Style")
+                    .font(.headline)
+                List(items, id: \.self) { item in
+                    Text(item)
+                }
+                .listStyle(.plain)
+                .frame(height: 150)
+                
+                Text("Grouped Style")
+                    .font(.headline)
+                List(items, id: \.self) { item in
+                    Text(item)
+                }
+                .listStyle(.grouped)
+                .frame(height: 150)
+                
+                Text("Inset Grouped Style")
+                    .font(.headline)
+                List(items, id: \.self) { item in
+                    Text(item)
+                }
+                .listStyle(.insetGrouped)
+                .frame(height: 150)
+            }
+            .navigationTitle("List Styles")
+        }
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        List(["Item 1", "Item 2", "Item 3"], id: \.self) { item in
+                            Text(item)
+                        }
+                        .listStyle(.plain)
+                        .frame(height: 120)
+                    )
+                }
+            ),
+            CodeExample(
+                title: "Interactive List with Sections",
+                description: "Lists with sections, selection, and context menus",
+                category: .realWorld,
+                code: #"""
+import SwiftUI
+
+struct InteractiveListExample: View {
+    @State private var contacts = [
+        Contact(name: "Alice Johnson", email: "alice@example.com", category: .work),
+        Contact(name: "Bob Smith", email: "bob@example.com", category: .personal),
+        Contact(name: "Carol Davis", email: "carol@example.com", category: .family)
+    ]
+    @State private var searchText = ""
+    
+    var filteredContacts: [Contact] {
+        if searchText.isEmpty {
+            return contacts
+        } else {
+            return contacts.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        }
+    }
+    
+    var groupedContacts: [ContactCategory: [Contact]] {
+        Dictionary(grouping: filteredContacts) { $0.category }
+    }
+    
+    var body: some View {
+        NavigationView {
+            List {
+                ForEach(ContactCategory.allCases, id: \.self) { category in
+                    if let categoryContacts = groupedContacts[category], !categoryContacts.isEmpty {
+                        Section(category.rawValue) {
+                            ForEach(categoryContacts.sorted { $0.name < $1.name }) { contact in
+                                ContactRowView(contact: contact)
+                                    .contextMenu {
+                                        Button("Edit") { }
+                                        Button("Delete", role: .destructive) {
+                                            deleteContact(contact)
+                                        }
+                                    }
+                            }
+                        }
+                    }
+                }
+            }
+            .searchable(text: $searchText, prompt: "Search contacts")
+            .navigationTitle("Contacts")
+        }
+    }
+    
+    private func deleteContact(_ contact: Contact) {
+        contacts.removeAll { $0.id == contact.id }
+    }
+}
+
+struct Contact: Identifiable {
+    let id = UUID()
+    let name: String
+    let email: String
+    let category: ContactCategory
+}
+
+enum ContactCategory: String, CaseIterable {
+    case work = "Work"
+    case personal = "Personal"
+    case family = "Family"
+}
+
+struct ContactRowView: View {
+    let contact: Contact
+    
+    var body: some View {
+        HStack {
+            Circle()
+                .fill(contact.category.color)
+                .frame(width: 40, height: 40)
+                .overlay {
+                    Text(String(contact.name.prefix(1)))
+                        .font(.headline)
+                        .foregroundColor(.white)
+                }
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text(contact.name)
+                    .font(.headline)
+                Text(contact.email)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+        }
+        .padding(.vertical, 2)
+    }
+}
+
+extension ContactCategory {
+    var color: Color {
+        switch self {
+        case .work: return .blue
+        case .personal: return .green
+        case .family: return .orange
+        }
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        List {
+                            Section("Work") {
+                                HStack {
+                                    Circle()
+                                        .fill(.blue)
+                                        .frame(width: 30, height: 30)
+                                        .overlay {
+                                            Text("A")
+                                                .font(.caption)
+                                                .foregroundColor(.white)
+                                        }
+                                    VStack(alignment: .leading) {
+                                        Text("Alice Johnson")
+                                            .font(.headline)
+                                        Text("alice@example.com")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    Spacer()
+                                }
+                            }
+                        }
+                        .frame(height: 120)
+                    )
+                }
+            )
+        ]
+    }
+    
+    // MARK: - Image Examples
+    static var imageExamples: [CodeExample] {
+        [
+            CodeExample(
+                title: "Basic Images",
+                description: "System images and SF Symbols with different styles",
+                category: .basic,
+                code: #"""
+import SwiftUI
+
+struct BasicImagesExample: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            // System SF Symbols
+            HStack(spacing: 20) {
+                Image(systemName: "heart")
+                    .font(.title)
+                
+                Image(systemName: "heart.fill")
+                    .font(.title)
+                    .foregroundColor(.red)
+                
+                Image(systemName: "star.fill")
+                    .font(.title)
+                    .foregroundColor(.yellow)
+            }
+            
+            // Different sizes
+            HStack(spacing: 20) {
+                Image(systemName: "gear")
+                    .font(.caption)
+                
+                Image(systemName: "gear")
+                    .font(.title)
+                
+                Image(systemName: "gear")
+                    .font(.largeTitle)
+            }
+            
+            // Styled images
+            HStack(spacing: 20) {
+                Image(systemName: "person.crop.circle")
+                    .font(.title)
+                    .foregroundColor(.blue)
+                
+                Image(systemName: "person.crop.circle.fill")
+                    .font(.title)
+                    .foregroundColor(.green)
+                
+                Image(systemName: "person.crop.circle.badge.plus")
+                    .font(.title)
+                    .foregroundColor(.purple)
+            }
+        }
+        .padding()
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        HStack(spacing: 20) {
+                            Image(systemName: "heart")
+                                .font(.title)
+                            
+                            Image(systemName: "heart.fill")
+                                .font(.title)
+                                .foregroundColor(.red)
+                            
+                            Image(systemName: "star.fill")
+                                .font(.title)
+                                .foregroundColor(.yellow)
+                        }
+                        .padding()
+                    )
+                }
+            ),
+            CodeExample(
+                title: "Image Modifiers and Styling",
+                description: "Resizing, clipping, and styling images",
+                category: .advanced,
+                code: #"""
+import SwiftUI
+
+struct ImageStylingExample: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            // Resizable with aspect ratio
+            HStack(spacing: 20) {
+                Image(systemName: "photo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 50, height: 50)
+                    .background(.gray.opacity(0.2))
+                    .cornerRadius(8)
+                
+                Image(systemName: "photo.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 50, height: 50)
+                    .background(.blue.opacity(0.2))
+                    .clipShape(Circle())
+                
+                Image(systemName: "camera.fill")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+                    .background(.green.opacity(0.2))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            
+            // Overlays and backgrounds
+            ZStack {
+                Image(systemName: "square.fill")
+                    .font(.system(size: 80))
+                    .foregroundColor(.blue.opacity(0.3))
+                
+                Image(systemName: "person.fill")
+                    .font(.system(size: 40))
+                    .foregroundColor(.white)
+            }
+            
+            // Image with overlay
+            Image(systemName: "photo.fill")
+                .font(.system(size: 60))
+                .foregroundColor(.gray)
+                .overlay(alignment: .bottomTrailing) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title2)
+                        .foregroundColor(.blue)
+                        .background(.white)
+                        .clipShape(Circle())
+                }
+        }
+        .padding()
+    }
+}
+"""#,
+                preview: {
+                    AnyView(
+                        VStack(spacing: 15) {
+                            HStack(spacing: 15) {
+                                Image(systemName: "photo")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 30, height: 30)
+                                    .background(.gray.opacity(0.2))
+                                    .cornerRadius(6)
+                                
+                                Image(systemName: "photo.fill")
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                                    .clipShape(Circle())
+                            }
+                            
+                            Image(systemName: "photo.fill")
+                                .font(.system(size: 40))
+                                .foregroundColor(.gray)
+                                .overlay(alignment: .bottomTrailing) {
+                                    Image(systemName: "plus.circle.fill")
+                                        .font(.caption)
+                                        .foregroundColor(.blue)
+                                }
+                        }
+                        .padding()
+                    )
+                }
+            )
+        ]
     }
 }
 

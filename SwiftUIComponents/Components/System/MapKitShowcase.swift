@@ -89,6 +89,15 @@ public enum NativeMapKitStyle: CaseIterable {
         case .hybrid: return .hybrid
         }
     }
+    
+    @available(iOS 17.0, *)
+    var modernMapStyle: MapStyle {
+        switch self {
+        case .standard, .withAnnotations: return .standard
+        case .satellite: return .imagery
+        case .hybrid: return .hybrid
+        }
+    }
 }
 
 struct NativeMapKitExample: View {
@@ -112,9 +121,15 @@ struct NativeMapKitExample: View {
             
             // Map view
             if #available(iOS 17.0, *) {
-                Map(coordinateRegion: $region, annotationItems: style == .withAnnotations ? annotations : []) { annotation in
-                    MapPin(coordinate: annotation.coordinate, tint: .red)
+                Map(position: .constant(.region(region))) {
+                    if style == .withAnnotations {
+                        ForEach(annotations, id: \.title) { annotation in
+                            Marker(annotation.title, coordinate: annotation.coordinate)
+                                .tint(.red)
+                        }
+                    }
                 }
+                .mapStyle(style.modernMapStyle)
                 .frame(height: 100)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .overlay(
