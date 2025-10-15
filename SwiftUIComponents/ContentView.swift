@@ -129,6 +129,7 @@ struct CategoryCardView: View {
         case .navigation: return "Navigation, sheets, and presentation"
         case .media: return "Images, videos, and media content"
         case .system: return "System integration and platform features"
+        case .creators: return "Create and customize native SwiftUI views"
         }
     }
 }
@@ -144,10 +145,17 @@ struct ComponentListView: View {
                     EmptyStateView(category: category)
                 } else {
                     ForEach(componentRegistry.components(for: category)) { component in
-                        NavigationLink(destination: ComponentDetailView(component: component)) {
-                            ComponentRowView(component: component)
+                        if category == .creators {
+                            NavigationLink(destination: CreatorDetailView(component: component)) {
+                                ComponentRowView(component: component)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        } else {
+                            NavigationLink(destination: ComponentDetailView(component: component)) {
+                                ComponentRowView(component: component)
+                            }
+                            .buttonStyle(PlainButtonStyle())
                         }
-                        .buttonStyle(PlainButtonStyle())
                     }
                 }
             }
@@ -210,55 +218,53 @@ struct ComponentDetailView: View {
     let component: ComponentModel
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                // Compact Header - Keep only description
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(component.description)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(.systemGroupedBackground))
-                
+        VStack(spacing: 24) {
+            // Compact Header - Keep only description
+            VStack(alignment: .leading, spacing: 8) {
+                Text(component.description)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(.systemGroupedBackground))
+            
 
+            
+            // Live Preview (if implemented)
+            if component.isImplemented {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Live Preview")
+                        .font(.headline)
+                    
+                    componentPreview
+                        .padding()
+                        .background(Color(.systemBackground))
+                        .cornerRadius(12)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color(.systemGray5), lineWidth: 1)
+                        )
+                }
                 
-                // Live Preview (if implemented)
-                if component.isImplemented {
+                // Code Snippet
+                CodeSnippetView(component: component)
+                
+                // Code Examples
+                let examples = CodeExamplesProvider.getExamples(for: component.id)
+                if !examples.isEmpty {
                     VStack(alignment: .leading, spacing: 16) {
-                        Text("Live Preview")
+                        Text("Code Examples")
                             .font(.headline)
                         
-                        componentPreview
-                            .padding()
-                            .background(Color(.systemBackground))
-                            .cornerRadius(12)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color(.systemGray5), lineWidth: 1)
-                            )
-                    }
-                    
-                    // Code Snippet
-                    CodeSnippetView(component: component)
-                    
-                    // Code Examples
-                    let examples = CodeExamplesProvider.getExamples(for: component.id)
-                    if !examples.isEmpty {
-                        VStack(alignment: .leading, spacing: 16) {
-                            Text("Code Examples")
-                                .font(.headline)
-                            
-                            CodeExamplesSection(component: component, examples: examples)
-                        }
+                        CodeExamplesSection(component: component, examples: examples)
                     }
                 }
-                
-                Spacer()
             }
-            .padding()
+            
+            Spacer()
         }
+        .padding()
         .navigationTitle(component.displayName)
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(.systemGroupedBackground))
@@ -389,6 +395,8 @@ struct ComponentDetailView: View {
             GridShowcase()
         case "TableShowcase":
             TableShowcase()
+        case "AlertCreator":
+            AlertCreatorView()
         default:
             Text("Preview coming soon...")
                 .foregroundStyle(.secondary)

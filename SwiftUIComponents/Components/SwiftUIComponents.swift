@@ -24,6 +24,7 @@ public protocol ComponentConfiguration {
 // MARK: - Component Categories
 
 public enum ComponentCategory: String, CaseIterable {
+    case creators = "Creators"
     case buttons = "Buttons & Actions"
     case controls = "Controls & Selection"
     case inputs = "Text & Input"
@@ -43,6 +44,7 @@ public enum ComponentCategory: String, CaseIterable {
         case .layout: return "rectangle.3.group"
         case .media: return "photo"
         case .system: return "gear"
+        case .creators: return "plus.square.on.square"
         }
     }
     
@@ -56,6 +58,7 @@ public enum ComponentCategory: String, CaseIterable {
         case .layout: return .cyan
         case .media: return .pink
         case .system: return .gray
+        case .creators: return .red
         }
     }
 }
@@ -291,6 +294,30 @@ public class ComponentRegistry: ObservableObject {
                 displayName: "HUD/Loading",
                 category: .feedback,
                 description: "Native iOS loading indicators and activity views",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "AlertCreator",
+                displayName: "Alert Creator",
+                category: .creators,
+                description: "Create and customize native SwiftUI Alerts",
+                minimumIOSVersion: "16.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "ActionSheetCreator",
+                displayName: "Action Sheet Creator (Deprecated)",
+                category: .creators,
+                description: "Create and customize native SwiftUI Action Sheets. Deprecated in iOS 15.",
+                minimumIOSVersion: "13.0",
+                isImplemented: true
+            ),
+            ComponentModel(
+                id: "ConfirmationDialogCreator",
+                displayName: "Confirmation Dialog Creator",
+                category: .creators,
+                description: "Create and customize native SwiftUI Confirmation Dialogs",
                 minimumIOSVersion: "16.0",
                 isImplemented: true
             ),
